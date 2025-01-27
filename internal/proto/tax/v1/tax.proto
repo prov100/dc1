@@ -1,0 +1,318 @@
+syntax = "proto3";
+
+package tax.v1;
+
+import "buf/validate/validate.proto";
+import "common/v1/common.proto";
+
+option go_package = "github.com/prov100/dc1/internal/protogen/tax/v1";
+
+// The TaxService service definition.
+service TaxService {
+  rpc GetTaxSchemes(GetTaxSchemesRequest) returns (GetTaxSchemesResponse);
+  rpc GetTaxScheme(GetTaxSchemeRequest) returns (GetTaxSchemeResponse);
+  rpc CreateTaxCategory(CreateTaxCategoryRequest) returns (CreateTaxCategoryResponse);
+  rpc UpdateTaxCategory(UpdateTaxCategoryRequest) returns (UpdateTaxCategoryResponse);
+  rpc CreateTaxScheme(CreateTaxSchemeRequest) returns (CreateTaxSchemeResponse);
+  rpc UpdateTaxScheme(UpdateTaxSchemeRequest) returns (UpdateTaxSchemeResponse);
+  rpc CreateTaxSchemeJurisdiction(CreateTaxSchemeJurisdictionRequest) returns (CreateTaxSchemeJurisdictionResponse);
+  rpc UpdateTaxSchemeJurisdiction(UpdateTaxSchemeJurisdictionRequest) returns (UpdateTaxSchemeJurisdictionResponse);
+  rpc CreateTaxTotal(CreateTaxTotalRequest) returns (CreateTaxTotalResponse);
+  rpc UpdateTaxTotal(UpdateTaxTotalRequest) returns (UpdateTaxTotalResponse);
+  rpc CreateTaxSubTotal(CreateTaxSubTotalRequest) returns (CreateTaxSubTotalResponse);
+  rpc UpdateTaxSubTotal(UpdateTaxSubTotalRequest) returns (UpdateTaxSubTotalResponse);
+}
+
+message GetTaxSchemesResponse {
+  repeated TaxScheme tax_schemes = 1;
+  string next_cursor = 2;
+}
+
+message GetTaxSchemesRequest {
+  string limit = 1;
+  string next_cursor = 2;
+  string user_email = 3;
+  string request_id = 4;
+}
+
+message GetTaxSchemeRequest {
+  common.v1.GetRequest get_request = 1;
+}
+
+message GetTaxSchemeResponse {
+  TaxScheme tax_scheme = 1;
+}
+
+message TaxCategory {
+  TaxCategoryD tax_category_d = 1;
+  common.v1.CrUpdUser cr_upd_user = 2;
+  common.v1.CrUpdTime cr_upd_time = 3;
+}
+
+message TaxCategoryD {
+  uint32 id = 1;
+  bytes uuid4 = 2;
+  string id_s = 3;
+  string tc_id = 4;
+  string tax_category_name = 5;
+  float percent = 6;
+  string base_unit_measure = 7;
+  double per_unit_amount = 8;
+  string tax_exemption_reason_code = 9;
+  string tax_exemption_reason = 10;
+  string tier_range = 11;
+  float tier_rate_percent = 12;
+  uint32 tax_scheme_id = 13;
+}
+
+message CreateTaxCategoryRequest {
+  string tc_id = 1;
+  string tax_category_name = 2;
+  float percent = 3;
+  string base_unit_measure = 4;
+  double per_unit_amount = 5;
+  string tax_exemption_reason_code = 6;
+  string tax_exemption_reason = 7;
+  string tier_range = 8;
+  float tier_rate_percent = 9;
+  uint32 tax_scheme_id = 10;
+  string user_id = 11;
+  string user_email = 12;
+  string request_id = 13;
+}
+
+message CreateTaxCategoryResponse {
+  TaxCategory tax_category = 1;
+}
+
+message UpdateTaxCategoryRequest {
+  string tax_category_name = 1;
+  float percent = 2;
+  string base_unit_measure = 3;
+  double per_unit_amount = 4;
+  string tax_exemption_reason_code = 5;
+  string tax_exemption_reason = 6;
+  string id = 7;
+  string user_id = 8;
+  string user_email = 9;
+  string request_id = 10;
+}
+
+message UpdateTaxCategoryResponse {}
+
+message TaxScheme {
+  TaxSchemeD tax_scheme_d = 1;
+  common.v1.CrUpdUser cr_upd_user = 2;
+  common.v1.CrUpdTime cr_upd_time = 3;
+}
+
+message TaxSchemeD {
+  uint32 id = 1;
+  bytes uuid4 = 2;
+  string id_s = 3;
+  string ts_id = 4;
+  string tax_scheme_name = 5;
+  string tax_type_code = 6;
+  string currency_code = 7;
+}
+
+message CreateTaxSchemeRequest {
+  string ts_id = 1;
+  string tax_scheme_name = 2 [(buf.validate.field).string.min_len = 1];
+  string tax_type_code = 3;
+  string currency_code = 4;
+  string user_id = 5;
+  string user_email = 6;
+  string request_id = 7;
+}
+
+message UpdateTaxSchemeRequest {
+  string tax_scheme_name = 1;
+  string tax_type_code = 2;
+  string currency_code = 3;
+  string id = 4;
+  string user_id = 5;
+  string user_email = 6;
+  string request_id = 7;
+}
+
+message UpdateTaxSchemeResponse {}
+
+message CreateTaxSchemeResponse {
+  TaxScheme tax_scheme = 1;
+}
+
+message TaxSchemeJurisdiction {
+  TaxSchemeJurisdictionD tax_scheme_jurisdiction_d = 1;
+  common.v1.TaxSchemeInfo tax_scheme_info = 2;
+  common.v1.CrUpdUser cr_upd_user = 3;
+  common.v1.CrUpdTime cr_upd_time = 4;
+}
+
+message TaxSchemeJurisdictionD {
+  uint32 id = 1;
+  bytes uuid4 = 2;
+  string id_s = 3;
+  uint32 address_id = 4;
+}
+
+message CreateTaxSchemeJurisdictionRequest {
+  string addr_list_agency_id = 1;
+  string addr_list_id = 2;
+  string addr_list_version_id = 3;
+  string address_type_code = 4;
+  string address_format_code = 5;
+  string postbox = 6;
+  string floor = 7;
+  string room = 8;
+  string street_name = 9;
+  string additional_street_name = 10;
+  string block_name = 11;
+  string building_name = 12;
+  string building_number = 13;
+  string inhouse_mail = 14;
+  string department = 15;
+  string mark_attention = 16;
+  string mark_care = 17;
+  string plot_identification = 18;
+  string city_subdivision_name = 19;
+  string city_name = 20;
+  string postal_zone = 21;
+  string country_subentity = 22;
+  string country_subentity_code = 23;
+  string region = 24;
+  string district = 25;
+  string timezone_offset = 26;
+  string country_id_code = 27;
+  string country_name = 28;
+  double location_coord_lat = 29;
+  double location_coord_lon = 30;
+  string note = 31;
+  uint32 tax_scheme_id = 32;
+  string tax_scheme_name = 33;
+  string user_id = 34;
+  string user_email = 35;
+  string request_id = 36;
+}
+
+message CreateTaxSchemeJurisdictionResponse {
+  TaxSchemeJurisdiction tax_scheme_jurisdiction = 1;
+}
+
+message UpdateTaxSchemeJurisdictionRequest {
+  uint32 tax_scheme_id = 1;
+  string tax_scheme_name = 2;
+  string id = 3;
+  string user_id = 4;
+  string user_email = 5;
+  string request_id = 6;
+}
+
+message UpdateTaxSchemeJurisdictionResponse {}
+
+message TaxSubTotal {
+  TaxSubTotalD tax_sub_total_d = 1;
+  common.v1.CrUpdUser cr_upd_user = 2;
+  common.v1.CrUpdTime cr_upd_time = 3;
+}
+
+message TaxSubTotalD {
+  uint32 id = 1;
+  bytes uuid4 = 2;
+  string id_s = 3;
+  double taxable_amount = 4;
+  double tax_amount = 5;
+  uint32 calculation_sequence_numeric = 6;
+  double transaction_currency_tax_amount = 7;
+  float percent = 8;
+  string base_unit_measure = 9;
+  double per_unit_amount = 10;
+  string tier_range = 11;
+  double tier_rate_percent = 12;
+  uint32 tax_category_id = 13;
+  uint32 tax_total_id = 14;
+}
+
+message CreateTaxSubTotalRequest {
+  double taxable_amount = 1;
+  double tax_amount = 2;
+  uint32 calculation_sequence_numeric = 3;
+  double transaction_currency_tax_amount = 4;
+  float percent = 5;
+  string base_unit_measure = 6;
+  double per_unit_amount = 7;
+  string tier_range = 8;
+  double tier_rate_percent = 9;
+  uint32 tax_category_id = 10;
+  uint32 tax_total_id = 11;
+  string user_id = 12;
+  string user_email = 13;
+  string request_id = 14;
+}
+
+message CreateTaxSubTotalResponse {
+  TaxSubTotal tax_sub_total = 1;
+}
+
+message UpdateTaxSubTotalRequest {
+  double taxable_amount = 1;
+  double tax_amount = 2;
+  uint32 calculation_sequence_numeric = 3;
+  double transaction_currency_tax_amount = 4;
+  float percent = 5;
+  string base_unit_measure = 6;
+  double per_unit_amount = 7;
+  string id = 8;
+  string user_id = 9;
+  string user_email = 10;
+  string request_id = 11;
+}
+
+message UpdateTaxSubTotalResponse {}
+
+message TaxTotal {
+  TaxTotalD tax_total_d = 1;
+  common.v1.CrUpdUser cr_upd_user = 2;
+  common.v1.CrUpdTime cr_upd_time = 3;
+}
+
+message TaxTotalD {
+  uint32 id = 1;
+  bytes uuid4 = 2;
+  string id_s = 3;
+  double tax_amount = 4;
+  double rounding_amount = 5;
+  bool tax_evidence_indicator = 6;
+  bool tax_included_indicator = 7;
+  uint32 tax_category_id = 8;
+  string master_flag = 9;
+  uint32 master_id = 10;
+}
+
+message CreateTaxTotalRequest {
+  double tax_amount = 1;
+  double rounding_amount = 2;
+  bool tax_evidence_indicator = 3;
+  bool tax_included_indicator = 4;
+  string master_flag = 5;
+  uint32 master_id = 6;
+  uint32 tax_category_id = 7;
+  string user_id = 8;
+  string user_email = 9;
+  string request_id = 10;
+}
+
+message CreateTaxTotalResponse {
+  TaxTotal tax_total = 1;
+}
+
+message UpdateTaxTotalRequest {
+  double tax_amount = 1;
+  double rounding_amount = 2;
+  string id = 3;
+  string user_id = 4;
+  string user_email = 5;
+  string request_id = 6;
+}
+
+message UpdateTaxTotalResponse {}

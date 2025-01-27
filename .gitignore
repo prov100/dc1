@@ -22,4 +22,10 @@ go.work
 go.work.sum
 
 # env file
-.env
+cadence-dcsa.sh
+cadence-dcsa.log
+cadence-dcsa_party.log
+cadence-dcsa_user.log
+internal/common/keys
+frontend/node_modules
+frontend/.env
