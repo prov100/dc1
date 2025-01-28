@@ -64,7 +64,7 @@ func TestGetUsers(t *testing.T) {
 	}
 
 	users := []*partyproto.User{}
-	users = append(users, user2, user1)
+	users = append(users, user1, user2)
 
 	expected := &partyproto.GetUsersResponse{}
 	expected.Users = users
