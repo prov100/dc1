@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/prov100/dc1/internal/config"
+	partyproto "github.com/prov100/dc1/internal/protogen/party/v1"
 	"github.com/rs/cors"
 	"github.com/unrolled/secure"
 	"go.uber.org/zap"
@@ -121,4 +122,21 @@ func CreateCtxJWT(ctx context.Context) (context.Context, error) {
 	newCtx := metadata.NewOutgoingContext(ctx, md)
 	fmt.Println("auth.go CreateCtxJWT newCtx", newCtx)
 	return newCtx, nil
+}
+
+// GetProtoMd - used to get auth details and context
+func GetProtoMd(r *http.Request) (context.Context, partyproto.GetAuthUserDetailsRequest) {
+	data := GetAuthData(r)
+
+	cdata := partyproto.GetAuthUserDetailsRequest{}
+	cdata.TokenString = data.TokenString
+	cdata.Email = data.Email
+	cdata.RequestUrlPath = r.URL.Path
+	cdata.RequestMethod = r.Method
+
+	md := metadata.Pairs("authorization", "Bearer "+cdata.TokenString)
+
+	ctx := metadata.NewOutgoingContext(r.Context(), md)
+
+	return ctx, cdata
 }

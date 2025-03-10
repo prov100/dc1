@@ -1,11 +1,9 @@
 package partycontrollers
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
 	"time"
 
 	"github.com/prov100/dc1/internal/common"
@@ -61,7 +59,7 @@ func (uc *UserController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
 		return
 	}
-	switch r.Method {
+	/*switch r.Method {
 	case http.MethodGet:
 		uc.processGet(ctx, w, r, user, pathParts, queryString)
 	case http.MethodPost:
@@ -73,7 +71,7 @@ func (uc *UserController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	default:
 		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
 		return
-	}
+	}*/
 }
 
 // processGet - Parse URL for all the GET paths and call the controller action
@@ -82,8 +80,8 @@ func (uc *UserController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	GET  "/v1/users/{id}"
 */
 
-func (uc *UserController) processGet(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse, pathParts []string, queryString url.Values) {
-	/*switch {
+/*func (uc *UserController) processGet(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse, pathParts []string, queryString url.Values) {
+	switch {
 	case (len(pathParts) == 2) && (pathParts[1] == "users"):
 		limit := queryString.Get("limit")
 		cursor := queryString.Get("cursor")
@@ -93,8 +91,8 @@ func (uc *UserController) processGet(ctx context.Context, w http.ResponseWriter,
 	default:
 		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
 		return
-	}*/
-}
+	}
+}*/
 
 // processPost - Parse URL for all the POST paths and call the controller action
 /*
@@ -103,7 +101,7 @@ func (uc *UserController) processGet(ctx context.Context, w http.ResponseWriter,
 	POST  "/v1/users/getuserbyemail"
 */
 
-func (uc *UserController) processPost(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse, pathParts []string) {
+/*func (uc *UserController) processPost(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse, pathParts []string) {
 	switch {
 	case (len(pathParts) == 3) && (pathParts[1] == "users"):
 		switch {
@@ -121,35 +119,35 @@ func (uc *UserController) processPost(ctx context.Context, w http.ResponseWriter
 		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
 		return
 	}
-}
+}*/
 
 // processPut - Parse URL for all the put paths and call the controller action
 /*
  PUT  "/v1/users/{id}"
 */
 
-func (uc *UserController) processPut(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse, pathParts []string, tokenString string) {
+/*func (uc *UserController) processPut(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse, pathParts []string, tokenString string) {
 	if (len(pathParts) == 3) && (pathParts[1] == "users") {
 		uc.UpdateUser(ctx, w, r, pathParts[2], user, tokenString)
 	} else {
 		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
 		return
 	}
-}
+}*/
 
 // processDelete - Parse URL for all the delete paths and call the controller action
 /*
  DELETE  "/v1/users/{id}"
 */
 
-func (uc *UserController) processDelete(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse, pathParts []string, tokenString string) {
+/*func (uc *UserController) processDelete(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse, pathParts []string, tokenString string) {
 	if (len(pathParts) == 3) && (pathParts[1] == "users") {
 		uc.DeleteUser(ctx, w, r, pathParts[2], user, tokenString)
 	} else {
 		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
 		return
 	}
-}
+}*/
 
 // GetUsers - Get Users
 /*func (uc *UserController) GetUsers(ctx context.Context, w http.ResponseWriter, r *http.Request, limit string, cursor string, user *partyproto.GetAuthUserDetailsResponse) {
@@ -164,7 +162,7 @@ func (uc *UserController) processDelete(ctx context.Context, w http.ResponseWrit
 
 func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("GetUsers")
-	data := common.GetAuthData(r)
+	/*data := common.GetAuthData(r)
 
 	cdata := partyproto.GetAuthUserDetailsRequest{}
 	cdata.TokenString = data.TokenString
@@ -174,7 +172,8 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 	md := metadata.Pairs("authorization", "Bearer "+cdata.TokenString)
 
-	ctx := metadata.NewOutgoingContext(r.Context(), md)
+	ctx := metadata.NewOutgoingContext(r.Context(), md)*/
+	ctx, cdata := common.GetProtoMd(r)
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
 	if err != nil {
 		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
@@ -191,20 +190,41 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	// common.RenderJSON(w, "users are")
 }
 
-// GetUsers1 - Get Users
-/*func (uc *UserController) GetUsers1(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-	//users, err := uc.UserServiceClient.GetUsers(ctx, &partyproto.GetUsersRequest{UserEmail: user.Email, RequestId: user.RequestId})
-	//if err != nil {
-	//	uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-	//	common.RenderErrorJSON(w, "1301", err.Error(), 402, user.RequestId)
-	//	return
-	//}
-	//common.RenderJSON(w, users)
-	common.RenderJSON(w, "users are")
+// GetUser - Get User Details
+/*func (uc *UserController) GetUser(ctx context.Context, w http.ResponseWriter, r *http.Request, id string, user *partyproto.GetAuthUserDetailsResponse) {
+	usr, err := uc.UserServiceClient.GetUser(ctx, &partyproto.GetUserRequest{GetRequest: &commonproto.GetRequest{Id: id, UserEmail: user.Email, RequestId: user.RequestId}})
+	if err != nil {
+		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
+		common.RenderErrorJSON(w, "1303", err.Error(), 400, user.RequestId)
+		return
+	}
+
+	common.RenderJSON(w, usr)
 }*/
 
-// GetUser - Get User Details
-func (uc *UserController) GetUser(ctx context.Context, w http.ResponseWriter, r *http.Request, id string, user *partyproto.GetAuthUserDetailsResponse) {
+func (uc *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("GetUser")
+	id := r.PathValue("id")
+	fmt.Println("id in GetUser is", id)
+	/*data := common.GetAuthData(r)
+
+	cdata := partyproto.GetAuthUserDetailsRequest{}
+	cdata.TokenString = data.TokenString
+	cdata.Email = data.Email
+	cdata.RequestUrlPath = r.URL.Path
+	cdata.RequestMethod = r.Method
+
+	md := metadata.Pairs("authorization", "Bearer "+cdata.TokenString)
+
+	ctx := metadata.NewOutgoingContext(r.Context(), md)*/
+	ctx, cdata := common.GetProtoMd(r)
+	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
+	if err != nil {
+		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
+		return
+	}
+	fmt.Println("user", user)
+
 	usr, err := uc.UserServiceClient.GetUser(ctx, &partyproto.GetUserRequest{GetRequest: &commonproto.GetRequest{Id: id, UserEmail: user.Email, RequestId: user.RequestId}})
 	if err != nil {
 		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
@@ -245,70 +265,78 @@ func (uc *UserController) GetUser(ctx context.Context, w http.ResponseWriter, r 
 }*/
 
 // ChangePassword - Changes Password
-func (uc *UserController) ChangePassword(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse) {
-	select {
-	case <-ctx.Done():
-		common.RenderErrorJSON(w, "1002", "Client closed connection", 402, user.RequestId)
+func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	ctx, cdata := common.GetProtoMd(r)
+	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
+	if err != nil {
+		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
 		return
-	default:
-		form := partyproto.ChangePasswordRequest{}
-		decoder := json.NewDecoder(r.Body)
-		err := decoder.Decode(&form)
-		if err != nil {
-			uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-			common.RenderErrorJSON(w, "1306", err.Error(), 402, user.RequestId)
-			return
-		}
-		form.UserEmail = user.Email
-		form.RequestId = user.RequestId
-		_, err = uc.UserServiceClient.ChangePassword(ctx, &form)
-		if err != nil {
-			uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-			common.RenderErrorJSON(w, "1307", err.Error(), 402, user.RequestId)
-			return
-		}
-
-		common.RenderJSON(w, "We've just sent you an email to reset your password.")
 	}
+	form := partyproto.ChangePasswordRequest{}
+	decoder := json.NewDecoder(r.Body)
+	err = decoder.Decode(&form)
+	if err != nil {
+		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
+		common.RenderErrorJSON(w, "1306", err.Error(), 402, user.RequestId)
+		return
+	}
+	form.UserEmail = user.Email
+	form.RequestId = user.RequestId
+	_, err = uc.UserServiceClient.ChangePassword(ctx, &form)
+	if err != nil {
+		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
+		common.RenderErrorJSON(w, "1307", err.Error(), 402, user.RequestId)
+		return
+	}
+
+	common.RenderJSON(w, "We've just sent you an email to reset your password.")
 }
 
 // GetUserByEmail - Get User By email
-func (uc *UserController) GetUserByEmail(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse) {
-	select {
-	case <-ctx.Done():
-		common.RenderErrorJSON(w, "1002", "Client closed connection", 402, user.RequestId)
+func (uc *UserController) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
+	ctx, cdata := common.GetProtoMd(r)
+	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
+	if err != nil {
+		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
 		return
-	default:
-		form := partyproto.GetUserByEmailRequest{}
-		decoder := json.NewDecoder(r.Body)
-		err := decoder.Decode(&form)
-		if err != nil {
-			uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-			common.RenderErrorJSON(w, "1308", err.Error(), 402, user.RequestId)
-			return
-		}
-		form.UserEmail = user.Email
-		form.RequestId = user.RequestId
-		usr, err := uc.UserServiceClient.GetUserByEmail(ctx, &partyproto.GetUserByEmailRequest{Email: form.Email, UserEmail: user.Email, RequestId: user.RequestId})
-		if err != nil {
-			uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-			common.RenderErrorJSON(w, "1309", err.Error(), 402, user.RequestId)
-			return
-		}
-
-		common.RenderJSON(w, usr)
 	}
+	form := partyproto.GetUserByEmailRequest{}
+	decoder := json.NewDecoder(r.Body)
+	err = decoder.Decode(&form)
+	if err != nil {
+		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
+		common.RenderErrorJSON(w, "1308", err.Error(), 402, user.RequestId)
+		return
+	}
+	form.UserEmail = user.Email
+	form.RequestId = user.RequestId
+	usr, err := uc.UserServiceClient.GetUserByEmail(ctx, &partyproto.GetUserByEmailRequest{Email: form.Email, UserEmail: user.Email, RequestId: user.RequestId})
+	if err != nil {
+		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
+		common.RenderErrorJSON(w, "1309", err.Error(), 402, user.RequestId)
+		return
+	}
+
+	common.RenderJSON(w, usr)
 }
 
 // UpdateUser - Update User
-func (uc *UserController) UpdateUser(ctxNew context.Context, w http.ResponseWriter, r *http.Request, id string, user *partyproto.GetAuthUserDetailsResponse, tokenString string) {
+func (uc *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	ctx, cdata := common.GetProtoMd(r)
+	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
+	if err != nil {
+		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
+		return
+	}
+
 	md := metadata.Pairs(
 		"timestamp", time.Now().Format(time.StampNano),
 		"client-id", "web-api-client-us-east-1",
 		"user-id", user.RequestId,
 	)
 
-	ctx := metadata.NewOutgoingContext(ctxNew, md)
+	ctx = metadata.NewOutgoingContext(ctx, md)
 
 	workflowOptions := client.StartWorkflowOptions{
 		ID:                              "dcsa_" + uuid.New(),
@@ -319,7 +347,7 @@ func (uc *UserController) UpdateUser(ctxNew context.Context, w http.ResponseWrit
 
 	form := partyproto.UpdateUserRequest{}
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&form)
+	err = decoder.Decode(&form)
 	if err != nil {
 		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
 		common.RenderErrorJSON(w, "1310", err.Error(), 402, user.RequestId)
@@ -330,7 +358,7 @@ func (uc *UserController) UpdateUser(ctxNew context.Context, w http.ResponseWrit
 	form.UserEmail = user.Email
 	form.RequestId = user.RequestId
 	wHelper := uc.wfHelper
-	result := wHelper.StartWorkflow(workflowOptions, userworkflows.UpdateUserWorkflow, &form, tokenString, user, uc.log)
+	result := wHelper.StartWorkflow(workflowOptions, userworkflows.UpdateUserWorkflow, &form, cdata.TokenString, user, uc.log)
 	workflowClient := uc.workflowClient
 	workflowRun := workflowClient.GetWorkflow(ctx, result.ID, result.RunID)
 	var response string
@@ -344,7 +372,15 @@ func (uc *UserController) UpdateUser(ctxNew context.Context, w http.ResponseWrit
 }
 
 // DeleteUser - delete user
-func (uc *UserController) DeleteUser(ctx context.Context, w http.ResponseWriter, r *http.Request, id string, user *partyproto.GetAuthUserDetailsResponse, tokenString string) {
+func (uc *UserController) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	ctx, cdata := common.GetProtoMd(r)
+	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
+	if err != nil {
+		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
+		return
+	}
+
 	workflowOptions := client.StartWorkflowOptions{
 		ID:                              "dcsa_" + uuid.New(),
 		TaskList:                        userworkflows.ApplicationName,
@@ -353,11 +389,11 @@ func (uc *UserController) DeleteUser(ctx context.Context, w http.ResponseWriter,
 	}
 	form := partyproto.DeleteUserRequest{UserId: id, UserEmail: user.Email, RequestId: user.RequestId}
 	wHelper := uc.wfHelper
-	result := wHelper.StartWorkflow(workflowOptions, userworkflows.DeleteUserWorkflow, &form, tokenString, user, uc.log)
+	result := wHelper.StartWorkflow(workflowOptions, userworkflows.DeleteUserWorkflow, &form, cdata.TokenString, user, uc.log)
 	workflowClient := uc.workflowClient
 	workflowRun := workflowClient.GetWorkflow(ctx, result.ID, result.RunID)
 	var response string
-	err := workflowRun.Get(ctx, &response)
+	err = workflowRun.Get(ctx, &response)
 	if err != nil {
 		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
 		common.RenderErrorJSON(w, "1310", err.Error(), 402, user.RequestId)

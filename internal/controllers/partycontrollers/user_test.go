@@ -1,6 +1,7 @@
 package partycontrollers
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -77,7 +78,7 @@ func TestGetUsers(t *testing.T) {
 	}
 }
 
-/*func TestGetUser(t *testing.T) {
+func TestGetUser(t *testing.T) {
 	err := test.LoadSQL(log, dbService)
 	if err != nil {
 		t.Error(err)
@@ -88,7 +89,7 @@ func TestGetUsers(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-	req, err := http.NewRequest("GET", "https://localhost:6060/v0.1/users/auth0|66fd06d0bfea78a82bb42459/", nil)
+	req, err := http.NewRequest("GET", "https://localhost:6060/v0.1/users/auth0|66fd06d0bfea78a82bb42459", nil)
 	if err != nil {
 		t.Error(err)
 		return
@@ -205,7 +206,7 @@ func TestChangePassword(t *testing.T) {
 
 	data := []byte(`{"email" : "sprov300@gmail.com"}`)
 
-	req, err := http.NewRequest("POST", "http://localhost:6060/v0.1/users/change_password", bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", "http://localhost:6060/v0.1/users/change-password", bytes.NewBuffer(data))
 	if err != nil {
 		t.Error(err)
 		return
@@ -230,7 +231,7 @@ func TestChangePassword(t *testing.T) {
 			w.Body.String(), expected)
 		return
 	}
-}*/
+}
 
 func GetUser(id string, email string, picture string, name string) (*partyproto.User, error) {
 	user := new(partyproto.User)

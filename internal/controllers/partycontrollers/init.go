@@ -170,7 +170,7 @@ func InitTest(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOp
 	pp := NewPartyController(log, p, u)
 
 	hrlParty := common.GetHTTPRateLimiter(store, rateOpt.PartyMaxRate, rateOpt.PartyMaxBurst)
-	hrlUser := common.GetHTTPRateLimiter(store, rateOpt.UserMaxRate, rateOpt.UserMaxBurst)
+	// hrlUser := common.GetHTTPRateLimiter(store, rateOpt.UserMaxRate, rateOpt.UserMaxBurst)
 	// hrlU := common.GetHTTPRateLimiter(store, rateOpt.UMaxRate, rateOpt.UMaxBurst)
 
 	mux.Handle("/v0.1/parties", common.AddMiddleware(hrlParty.RateLimit(pp), common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"parties:cud", "parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
@@ -191,13 +191,43 @@ func InitTest(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOp
 	/*mux.Handle("GET /v0.1/users", common.AddMiddleware(hrlUser.RateLimit(usc),
 	common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
 
-	mux.Handle("GET /v0.1/users", common.AddMiddleware(http.HandlerFunc(usc.GetUsers),
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
-
 	// mux.Handle("GET /v0.1/users", middlewareChain(usc.GetUsers))
 
-	mux.Handle("GET /v0.1/users/{id}", common.AddMiddleware(hrlUser.RateLimit(usc),
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+	// Chain middlewares
+	middlewareChain := chainMiddlewares(
+		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+		common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+	)
+
+	mux.Handle("GET /v0.1/users", middlewareChain(usc.GetUsers))
+
+	/*
+		   mux.Handle("GET /v0.1/users", common.AddMiddleware(http.HandlerFunc(usc.GetUsers),
+				common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+
+		  mux.Handle("GET /v0.1/users/{id}", common.AddMiddleware(http.HandlerFunc(usc.GetUser),
+				common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+
+			mux.Handle("POST /v0.1/users/change-password", common.AddMiddleware(http.HandlerFunc(usc.ChangePassword),
+				common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+
+			mux.Handle("POST /v0.1/users/getuserbyemail", common.AddMiddleware(http.HandlerFunc(usc.GetUserByEmail),
+				common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+
+			mux.Handle("PUT /v0.1/users/{id}", common.AddMiddleware(http.HandlerFunc(usc.UpdateUser),
+				common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+
+			mux.Handle("DELETE /v0.1/users/{id}", common.AddMiddleware(http.HandlerFunc(usc.DeleteUser),
+				common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
 
 	return nil
+}
+
+func chainMiddlewares(middlewares ...func(http.Handler) http.Handler) func(http.Handler) http.Handler {
+	return func(finalHandler http.Handler) http.Handler {
+		for i := len(middlewares) - 1; i >= 0; i-- {
+			finalHandler = middlewares[i](finalHandler)
+		}
+		return finalHandler
+	}
 }
