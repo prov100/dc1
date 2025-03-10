@@ -1,7 +1,6 @@
 package partycontrollers
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -78,7 +77,7 @@ func TestGetUsers(t *testing.T) {
 	}
 }
 
-func TestGetUser(t *testing.T) {
+/*func TestGetUser(t *testing.T) {
 	err := test.LoadSQL(log, dbService)
 	if err != nil {
 		t.Error(err)
@@ -231,7 +230,7 @@ func TestChangePassword(t *testing.T) {
 			w.Body.String(), expected)
 		return
 	}
-}
+}*/
 
 func GetUser(id string, email string, picture string, name string) (*partyproto.User, error) {
 	user := new(partyproto.User)

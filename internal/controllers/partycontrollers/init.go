@@ -183,8 +183,18 @@ func InitTest(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOp
 	mux.Handle("/v0.1/users/", common.AddMiddleware(hrlUser.RateLimit(usc),
 		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
 
-	mux.Handle("GET /v0.1/users", common.AddMiddleware(hrlUser.RateLimit(usc),
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)), usc.GetUsers)
+	/* handler := http.HandlerFunc(usc.GetUsers)
+
+	 mux.Handle("GET /v0.1/users", common.AddMiddleware(handler,
+	common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
+
+	/*mux.Handle("GET /v0.1/users", common.AddMiddleware(hrlUser.RateLimit(usc),
+	common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
+
+	mux.Handle("GET /v0.1/users", common.AddMiddleware(http.HandlerFunc(usc.GetUsers),
+		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+
+	// mux.Handle("GET /v0.1/users", middlewareChain(usc.GetUsers))
 
 	mux.Handle("GET /v0.1/users/{id}", common.AddMiddleware(hrlUser.RateLimit(usc),
 		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))

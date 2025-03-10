@@ -3,6 +3,7 @@ package partycontrollers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"time"
@@ -38,6 +39,7 @@ func NewUserController(log *zap.Logger, s partyproto.UserServiceClient, wfHelper
 
 // ServeHTTP - parse url and call controller action
 func (uc *UserController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("in ServeHTTP")
 	data := common.GetAuthData(r)
 
 	cdata := partyproto.GetAuthUserDetailsRequest{}
@@ -160,15 +162,33 @@ func (uc *UserController) processDelete(ctx context.Context, w http.ResponseWrit
 	common.RenderJSON(w, users)
 }*/
 
-func (uc *UserController) GetUsers(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-	/*users, err := uc.UserServiceClient.GetUsers(ctx, &partyproto.GetUsersRequest{UserEmail: user.Email, RequestId: user.RequestId})
+func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("GetUsers")
+	data := common.GetAuthData(r)
+
+	cdata := partyproto.GetAuthUserDetailsRequest{}
+	cdata.TokenString = data.TokenString
+	cdata.Email = data.Email
+	cdata.RequestUrlPath = r.URL.Path
+	cdata.RequestMethod = r.Method
+
+	md := metadata.Pairs("authorization", "Bearer "+cdata.TokenString)
+
+	ctx := metadata.NewOutgoingContext(r.Context(), md)
+	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
+	if err != nil {
+		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
+		return
+	}
+	fmt.Println("user", user)
+	users, err := uc.UserServiceClient.GetUsers(ctx, &partyproto.GetUsersRequest{UserEmail: user.Email, RequestId: user.RequestId})
 	if err != nil {
 		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
 		common.RenderErrorJSON(w, "1301", err.Error(), 402, user.RequestId)
 		return
 	}
-	common.RenderJSON(w, users)*/
-	common.RenderJSON(w, "users are")
+	common.RenderJSON(w, users)
+	// common.RenderJSON(w, "users are")
 }
 
 // GetUsers1 - Get Users
