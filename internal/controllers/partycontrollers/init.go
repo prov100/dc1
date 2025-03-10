@@ -173,20 +173,6 @@ func InitTest(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOp
 	hrlUser := common.GetHTTPRateLimiter(store, rateOpt.UserMaxRate, rateOpt.UserMaxBurst)
 	// hrlU := common.GetHTTPRateLimiter(store, rateOpt.UMaxRate, rateOpt.UMaxBurst)
 
-	/*mux.Handle("/v0.1/parties", common.AddMiddleware(hrlParty.RateLimit(pp),
-		common.AuthenticateMiddleware(tokenService),
-		common.CorsMiddleware))
-	mux.Handle("/v0.1/parties/", common.AddMiddleware(hrlParty.RateLimit(pp),
-		common.AuthenticateMiddleware(tokenService),
-		common.CorsMiddleware))
-	mux.Handle("/v0.1/u/", common.AddMiddleware(hrlU.RateLimit(uc), common.CorsMiddleware))
-	mux.Handle("/v0.1/users", common.AddMiddleware(hrlUser.RateLimit(usc),
-		common.AuthenticateMiddleware(tokenService),
-		common.CorsMiddleware))
-	mux.Handle("/v0.1/users/", common.AddMiddleware(hrlUser.RateLimit(usc),
-		common.AuthenticateMiddleware(tokenService),
-		common.CorsMiddleware))*/
-
 	mux.Handle("/v0.1/parties", common.AddMiddleware(hrlParty.RateLimit(pp), common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"parties:cud", "parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
 
 	mux.Handle("/v0.1/parties/", common.AddMiddleware(hrlParty.RateLimit(pp), common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"parties:cud", "parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
@@ -198,7 +184,7 @@ func InitTest(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOp
 		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
 
 	mux.Handle("GET /v0.1/users", common.AddMiddleware(hrlUser.RateLimit(usc),
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)), usc.GetUsers)
 
 	mux.Handle("GET /v0.1/users/{id}", common.AddMiddleware(hrlUser.RateLimit(usc),
 		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))

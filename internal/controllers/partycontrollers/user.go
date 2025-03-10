@@ -81,7 +81,7 @@ func (uc *UserController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 */
 
 func (uc *UserController) processGet(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse, pathParts []string, queryString url.Values) {
-	switch {
+	/*switch {
 	case (len(pathParts) == 2) && (pathParts[1] == "users"):
 		limit := queryString.Get("limit")
 		cursor := queryString.Get("cursor")
@@ -91,7 +91,7 @@ func (uc *UserController) processGet(ctx context.Context, w http.ResponseWriter,
 	default:
 		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
 		return
-	}
+	}*/
 }
 
 // processPost - Parse URL for all the POST paths and call the controller action
@@ -150,7 +150,7 @@ func (uc *UserController) processDelete(ctx context.Context, w http.ResponseWrit
 }
 
 // GetUsers - Get Users
-func (uc *UserController) GetUsers(ctx context.Context, w http.ResponseWriter, r *http.Request, limit string, cursor string, user *partyproto.GetAuthUserDetailsResponse) {
+/*func (uc *UserController) GetUsers(ctx context.Context, w http.ResponseWriter, r *http.Request, limit string, cursor string, user *partyproto.GetAuthUserDetailsResponse) {
 	users, err := uc.UserServiceClient.GetUsers(ctx, &partyproto.GetUsersRequest{UserEmail: user.Email, RequestId: user.RequestId})
 	if err != nil {
 		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
@@ -158,6 +158,17 @@ func (uc *UserController) GetUsers(ctx context.Context, w http.ResponseWriter, r
 		return
 	}
 	common.RenderJSON(w, users)
+}*/
+
+func (uc *UserController) GetUsers(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+	/*users, err := uc.UserServiceClient.GetUsers(ctx, &partyproto.GetUsersRequest{UserEmail: user.Email, RequestId: user.RequestId})
+	if err != nil {
+		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
+		common.RenderErrorJSON(w, "1301", err.Error(), 402, user.RequestId)
+		return
+	}
+	common.RenderJSON(w, users)*/
+	common.RenderJSON(w, "users are")
 }
 
 // GetUsers1 - Get Users
