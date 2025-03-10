@@ -3,8 +3,8 @@ package common
 import (
 	"context"
 
-	commonproto "github.com/prov100/dc1/internal/protogen/common/v1"
 	"github.com/jmoiron/sqlx"
+	commonproto "github.com/prov100/dc1/internal/protogen/common/v1"
 	"go.uber.org/zap"
 )
 

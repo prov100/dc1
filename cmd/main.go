@@ -11,10 +11,10 @@ import (
 	"os/signal"
 	"path/filepath"
 
+	_ "github.com/go-sql-driver/mysql" // mysql
 	"github.com/prov100/dc1/internal/common"
 	"github.com/prov100/dc1/internal/config"
 	"github.com/prov100/dc1/internal/controllers/partycontrollers"
-	_ "github.com/go-sql-driver/mysql" // mysql
 	"github.com/rs/cors"
 	"github.com/throttled/throttled/v2/store/goredisstore"
 	"github.com/unrolled/secure"

@@ -38,12 +38,6 @@ func NewUserController(log *zap.Logger, s partyproto.UserServiceClient, wfHelper
 
 // ServeHTTP - parse url and call controller action
 func (uc *UserController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	/*h.SetupServiceConfig(uc.ConfigFilePath)
-	var err error
-	workflowClient, err = h.Builder.BuildCadenceClient()
-	if err != nil {
-		panic(err)
-	}*/
 	data := common.GetAuthData(r)
 
 	cdata := partyproto.GetAuthUserDetailsRequest{}
@@ -102,8 +96,8 @@ func (uc *UserController) processGet(ctx context.Context, w http.ResponseWriter,
 
 // processPost - Parse URL for all the POST paths and call the controller action
 /*
-	POST  "/v1/users/change_email"
-	POST  "/v1/users/change_password"
+	POST  "/v1/users/change-email"
+	POST  "/v1/users/change-password"
 	POST  "/v1/users/getuserbyemail"
 */
 
@@ -111,11 +105,11 @@ func (uc *UserController) processPost(ctx context.Context, w http.ResponseWriter
 	switch {
 	case (len(pathParts) == 3) && (pathParts[1] == "users"):
 		switch {
-		case pathParts[2] == "change_email":
+		case pathParts[2] == "change-email":
 			// uc.ChangeEmail(ctx, w, r, user)
 		case pathParts[2] == "getuserbyemail":
 			uc.GetUserByEmail(ctx, w, r, user)
-		case pathParts[2] == "change_password":
+		case pathParts[2] == "change-password":
 			uc.ChangePassword(ctx, w, r, user)
 		default:
 			common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
@@ -157,54 +151,37 @@ func (uc *UserController) processDelete(ctx context.Context, w http.ResponseWrit
 
 // GetUsers - Get Users
 func (uc *UserController) GetUsers(ctx context.Context, w http.ResponseWriter, r *http.Request, limit string, cursor string, user *partyproto.GetAuthUserDetailsResponse) {
-	/*AllowedRoles := []string{"co_admin"}
-
-	err := common.CheckRoles(AllowedRoles, user.Roles)
+	users, err := uc.UserServiceClient.GetUsers(ctx, &partyproto.GetUsersRequest{UserEmail: user.Email, RequestId: user.RequestId})
 	if err != nil {
 		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-		common.RenderErrorJSON(w, "1300", "You are Not Authorised", 402, user.RequestId)
+		common.RenderErrorJSON(w, "1301", err.Error(), 402, user.RequestId)
 		return
-	}*/
-
-	select {
-	case <-ctx.Done():
-		common.RenderErrorJSON(w, "1002", "Client closed connection", 402, user.RequestId)
-		return
-	default:
-		users, err := uc.UserServiceClient.GetUsers(ctx, &partyproto.GetUsersRequest{UserEmail: user.Email, RequestId: user.RequestId})
-		if err != nil {
-			uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-			common.RenderErrorJSON(w, "1301", err.Error(), 402, user.RequestId)
-			return
-		}
-		common.RenderJSON(w, users)
 	}
+	common.RenderJSON(w, users)
 }
+
+// GetUsers1 - Get Users
+/*func (uc *UserController) GetUsers1(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+	//users, err := uc.UserServiceClient.GetUsers(ctx, &partyproto.GetUsersRequest{UserEmail: user.Email, RequestId: user.RequestId})
+	//if err != nil {
+	//	uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
+	//	common.RenderErrorJSON(w, "1301", err.Error(), 402, user.RequestId)
+	//	return
+	//}
+	//common.RenderJSON(w, users)
+	common.RenderJSON(w, "users are")
+}*/
 
 // GetUser - Get User Details
 func (uc *UserController) GetUser(ctx context.Context, w http.ResponseWriter, r *http.Request, id string, user *partyproto.GetAuthUserDetailsResponse) {
-	/*AllowedRoles := []string{"co_admin"}
-	err := common.CheckRoles(AllowedRoles, user.Roles)
+	usr, err := uc.UserServiceClient.GetUser(ctx, &partyproto.GetUserRequest{GetRequest: &commonproto.GetRequest{Id: id, UserEmail: user.Email, RequestId: user.RequestId}})
 	if err != nil {
 		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-		common.RenderErrorJSON(w, "1302", "You are Not Authorised", 402, user.RequestId)
+		common.RenderErrorJSON(w, "1303", err.Error(), 400, user.RequestId)
 		return
-	}*/
-
-	select {
-	case <-ctx.Done():
-		common.RenderErrorJSON(w, "1002", "Client closed connection", 402, user.RequestId)
-		return
-	default:
-		usr, err := uc.UserServiceClient.GetUser(ctx, &partyproto.GetUserRequest{GetRequest: &commonproto.GetRequest{Id: id, UserEmail: user.Email, RequestId: user.RequestId}})
-		if err != nil {
-			uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-			common.RenderErrorJSON(w, "1303", err.Error(), 400, user.RequestId)
-			return
-		}
-
-		common.RenderJSON(w, usr)
 	}
+
+	common.RenderJSON(w, usr)
 }
 
 // ChangeEmail - Changes Email

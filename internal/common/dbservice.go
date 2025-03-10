@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/prov100/dc1/internal/config"
 	"github.com/jmoiron/sqlx"
 	"github.com/jmoiron/sqlx/reflectx"
+	"github.com/prov100/dc1/internal/config"
 	"go.uber.org/zap"
 )
 

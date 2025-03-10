@@ -7,9 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/prov100/dc1/internal/common"
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/jmoiron/sqlx"
+	"github.com/prov100/dc1/internal/common"
 	"go.uber.org/zap"
 )
 

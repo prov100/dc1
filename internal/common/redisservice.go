@@ -3,8 +3,8 @@ package common
 import (
 	"time"
 
-	"github.com/prov100/dc1/internal/config"
 	"github.com/go-redis/redis"
+	"github.com/prov100/dc1/internal/config"
 	"go.uber.org/zap"
 )
 

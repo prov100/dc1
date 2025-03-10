@@ -3,10 +3,10 @@ package main
 import (
 	"os"
 
+	_ "github.com/go-sql-driver/mysql" // mysql
 	"github.com/prov100/dc1/internal/common"
 	"github.com/prov100/dc1/internal/config"
 	"github.com/prov100/dc1/internal/services/partyservices"
-	_ "github.com/go-sql-driver/mysql" // mysql
 	"go.uber.org/zap"
 )
 

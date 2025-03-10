@@ -12,9 +12,9 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 
 	// interceptors "github.com/prov100/dc1/internal/interceptors"
+	_ "github.com/go-sql-driver/mysql"
 	partyproto "github.com/prov100/dc1/internal/protogen/party/v1"
 	"github.com/prov100/dc1/test"
-	_ "github.com/go-sql-driver/mysql"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"

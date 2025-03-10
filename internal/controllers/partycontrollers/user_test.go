@@ -9,9 +9,9 @@ import (
 	"reflect"
 	"testing"
 
+	_ "github.com/go-sql-driver/mysql"
 	partyproto "github.com/prov100/dc1/internal/protogen/party/v1"
 	"github.com/prov100/dc1/test"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func TestGetUsers(t *testing.T) {
