@@ -199,7 +199,9 @@ func InitTest(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOp
 		common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)
 
-	mux.Handle("GET /v0.1/users", middlewareChain(usc.GetUsers))
+	mux.Handle("GET /v0.1/users", middlewareChain(http.HandlerFunc(usc.GetUsers)))
+
+	mux.Handle("GET /v0.1/users/{id}", middlewareChain(http.HandlerFunc(usc.GetUser)))
 
 	/*
 		   mux.Handle("GET /v0.1/users", common.AddMiddleware(http.HandlerFunc(usc.GetUsers),

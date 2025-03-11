@@ -37,7 +37,7 @@ func NewUserController(log *zap.Logger, s partyproto.UserServiceClient, wfHelper
 
 // ServeHTTP - parse url and call controller action
 func (uc *UserController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("in ServeHTTP")
+	/*fmt.Println("in ServeHTTP")
 	data := common.GetAuthData(r)
 
 	cdata := partyproto.GetAuthUserDetailsRequest{}
@@ -58,7 +58,7 @@ func (uc *UserController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
 		return
-	}
+	}*/
 	/*switch r.Method {
 	case http.MethodGet:
 		uc.processGet(ctx, w, r, user, pathParts, queryString)
