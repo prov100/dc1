@@ -194,14 +194,27 @@ func InitTest(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOp
 	// mux.Handle("GET /v0.1/users", middlewareChain(usc.GetUsers))
 
 	// Chain middlewares
-	middlewareChain := chainMiddlewares(
+	umiddlewareChain1 := chainMiddlewares(
 		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
-		common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+		common.ValidatePermissions([]string{"users:cud"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)
 
-	mux.Handle("GET /v0.1/users", middlewareChain(http.HandlerFunc(usc.GetUsers)))
+	umiddlewareChain2 := chainMiddlewares(
+		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+		common.ValidatePermissions([]string{"users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+	)
 
-	mux.Handle("GET /v0.1/users/{id}", middlewareChain(http.HandlerFunc(usc.GetUser)))
+	mux.Handle("GET /v0.1/users", umiddlewareChain2(http.HandlerFunc(usc.GetUsers)))
+
+	mux.Handle("GET /v0.1/users/{id}", umiddlewareChain2(http.HandlerFunc(usc.GetUser)))
+
+	mux.Handle("POST /v0.1/users/change-password", umiddlewareChain1(http.HandlerFunc(usc.ChangePassword)))
+
+	mux.Handle("POST /v0.1/users/getuserbyemail", umiddlewareChain2(http.HandlerFunc(usc.GetUserByEmail)))
+
+	mux.Handle("PUT /v0.1/users/{id}", umiddlewareChain1(http.HandlerFunc(usc.UpdateUser)))
+
+	mux.Handle("DELETE /v0.1/users/{id}", umiddlewareChain1(http.HandlerFunc(usc.DeleteUser)))
 
 	/*
 		   mux.Handle("GET /v0.1/users", common.AddMiddleware(http.HandlerFunc(usc.GetUsers),
