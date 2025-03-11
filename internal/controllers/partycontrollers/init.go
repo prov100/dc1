@@ -2,7 +2,7 @@ package partycontrollers
 
 import (
 	"context"
-	"fmt"
+	//"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -28,15 +28,26 @@ var (
 
 // Init the party controllers
 func Init(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOptions, mux *http.ServeMux, store *goredisstore.GoRedisStore, serverOpt *config.ServerOptions, grpcServerOpt *config.GrpcServerOptions, uptraceOpt *config.UptraceOptions, configFilePath string) error {
-	h.SetupServiceConfig(configFilePath)
+  pwd, _ := os.Getwd()
+	keyPath := pwd + filepath.FromSlash(grpcServerOpt.GrpcCaCertPath)
+
+	u, p, h, workflowClient, err := initSetup(log, keyPath, configFilePath, serverOpt, grpcServerOpt)
+	if err != nil {
+		log.Error("Error", zap.Int("msgnum", 110), zap.Error(err))
+		return err
+	}
+
+	initUsers(mux, serverOpt, log, u, h, workflowClient)
+	initParties(mux, serverOpt, log, u, p, h, workflowClient)
+
+	/*h.SetupServiceConfig(configFilePath)
 	var err error
 	workflowClient, err = h.Builder.BuildCadenceClient()
 	if err != nil {
 		panic(err)
 	}
 
-	pwd, _ := os.Getwd()
-	keyPath := pwd + filepath.FromSlash(grpcServerOpt.GrpcCaCertPath)
+	
 	creds, err := credentials.NewClientTLSFromFile(keyPath, "localhost")
 	if err != nil {
 		log.Error("Error", zap.Int("msgnum", 110), zap.Error(err))
@@ -66,8 +77,6 @@ func Init(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOption
 
 	u := partyproto.NewUserServiceClient(userconn)
 	p := partyproto.NewPartyServiceClient(partyconn)
-	// uc := NewUController(log, u, h, workflowClient)
-	// usc := NewUserController(log, u, h, workflowClient)
 	pp := NewPartyController(log, p, u)
 
 	hrlParty := common.GetHTTPRateLimiter(store, rateOpt.PartyMaxRate, rateOpt.PartyMaxBurst)
@@ -100,13 +109,7 @@ func Init(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOption
 	// mux.Handle("/v0.1/parties", common.AddMiddleware(pp, common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"read:admin-messages"}))
 
 	// mux.Handle("/v0.1/parties/", common.AddMiddleware(pp, common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
-	mux.Handle("/v0.1/parties/", common.AddMiddleware(hrlParty.RateLimit(pp), common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"parties:cud", "parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
-
-	/*mux.Handle("/v0.1/users", common.AddMiddleware(usc,
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
-
-	mux.Handle("/v0.1/users/", common.AddMiddleware(usc,
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
+	mux.Handle("/v0.1/parties/", common.AddMiddleware(hrlParty.RateLimit(pp), common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"parties:cud", "parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
 
 	return nil
 }
@@ -115,17 +118,24 @@ func Init(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOption
 func InitTest(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOptions, mux *http.ServeMux, store *goredisstore.GoRedisStore, serverOpt *config.ServerOptions, grpcServerOpt *config.GrpcServerOptions, uptraceOpt *config.UptraceOptions, configFilePath string) error {
 	pwd, _ := os.Getwd()
 	keyPath := filepath.Join(pwd, filepath.FromSlash("/../../../")+filepath.FromSlash(grpcServerOpt.GrpcCaCertPath))
+
+	u, p, h, workflowClient, err := initSetup(log, keyPath, configFilePath, serverOpt, grpcServerOpt)
+	if err != nil {
+		log.Error("Error", zap.Int("msgnum", 110), zap.Error(err))
+		return err
+	}
+
+	initUsers(mux, serverOpt, log, u, h, workflowClient)
+	initParties(mux, serverOpt, log, u, p, h, workflowClient)
+
+	return nil
+}
+
+func initSetup(log *zap.Logger, keyPath string, configFilePath string, serverOpt *config.ServerOptions, grpcServerOpt *config.GrpcServerOptions) (partyproto.UserServiceClient, partyproto.PartyServiceClient, common.WfHelper, client.Client, error) {
 	creds, err := credentials.NewClientTLSFromFile(keyPath, "localhost")
 	if err != nil {
 		log.Error("Error", zap.Int("msgnum", 110), zap.Error(err))
 	}
-
-	/*tracer, _ := interceptors.NewJaegerTracer(log, jaegerTracerOpt, jaegerTracerOpt.UserServiceName)
-	userconn, err := grpc.NewClient(grpcServerOpt.GrpcUserServerPort, grpc.WithUserAgent(jaegerTracerOpt.UserAgent), grpc.WithTransportCredentials(creds), grpc.WithUnaryInterceptor(grpc_opentracing.UnaryClientInterceptor(grpc_opentracing.WithTracer(tracer))))
-	if err != nil {
-		log.Error("Error", zap.Int("msgnum", 113), zap.Error(err))
-		return err
-	}*/
 
 	tp, err := config.InitTracerProvider()
 	if err != nil {
@@ -137,112 +147,71 @@ func InitTest(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOp
 		}
 	}()
 
-	userconn, err := grpc.NewClient(grpcServerOpt.GrpcUserServerPort, grpc.WithTransportCredentials(creds), grpc.WithStatsHandler(otelgrpc.NewClientHandler()))
-	if err != nil {
-		log.Error("Error", zap.Int("msgnum", 113), zap.Error(err))
-		return err
-	}
-
-	// Set up a connection to the server.
-	/*tracer1, _ := interceptors.NewJaegerTracer(log, jaegerTracerOpt, jaegerTracerOpt.PartyServiceName)
-	partyconn, err := grpc.NewClient(grpcServerOpt.GrpcPartyServerPort, grpc.WithUserAgent(jaegerTracerOpt.UserAgent), grpc.WithTransportCredentials(creds), grpc.WithUnaryInterceptor(grpc_opentracing.UnaryClientInterceptor(grpc_opentracing.WithTracer(tracer1))))
-	if err != nil {
-		log.Error("Error", zap.Int("msgnum", 110), zap.Error(err))
-		return err
-	}*/
-
-	partyconn, err := grpc.NewClient(grpcServerOpt.GrpcPartyServerPort, grpc.WithTransportCredentials(creds), grpc.WithStatsHandler(otelgrpc.NewClientHandler()))
-	if err != nil {
-		log.Error("Error", zap.Int("msgnum", 110), zap.Error(err))
-		return err
-	}
-
 	h.SetupServiceConfig(configFilePath)
 	workflowClient, err = h.Builder.BuildCadenceClient()
 	if err != nil {
 		panic(err)
 	}
 
+	userconn, err := grpc.NewClient(grpcServerOpt.GrpcUserServerPort, grpc.WithTransportCredentials(creds), grpc.WithStatsHandler(otelgrpc.NewClientHandler()))
+	if err != nil {
+		log.Error("Error", zap.Int("msgnum", 113), zap.Error(err))
+		return nil, nil, h, nil, err
+	}
+
 	u := partyproto.NewUserServiceClient(userconn)
+
+	partyconn, err := grpc.NewClient(grpcServerOpt.GrpcPartyServerPort, grpc.WithTransportCredentials(creds), grpc.WithStatsHandler(otelgrpc.NewClientHandler()))
+	if err != nil {
+		log.Error("Error", zap.Int("msgnum", 110), zap.Error(err))
+		return nil, nil, h, nil, err
+	}
+
 	p := partyproto.NewPartyServiceClient(partyconn)
-	// uc := NewUController(log, u, h, workflowClient)
-	usc := NewUserController(log, u, h, workflowClient)
+
+	return u, p, h, workflowClient, nil
+}
+
+func initParties(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Logger, u partyproto.UserServiceClient, p partyproto.PartyServiceClient, wfHelper common.WfHelper, workflowClient client.Client) {
 	pp := NewPartyController(log, p, u)
 
-	hrlParty := common.GetHTTPRateLimiter(store, rateOpt.PartyMaxRate, rateOpt.PartyMaxBurst)
-	// hrlUser := common.GetHTTPRateLimiter(store, rateOpt.UserMaxRate, rateOpt.UserMaxBurst)
-	// hrlU := common.GetHTTPRateLimiter(store, rateOpt.UMaxRate, rateOpt.UMaxBurst)
+	mChainCud := common.ChainMiddlewares(
+		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+		common.ValidatePermissions([]string{"parties:cud"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+	)
 
-	mux.Handle("/v0.1/parties", common.AddMiddleware(hrlParty.RateLimit(pp), common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"parties:cud", "parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+	mChainRead := common.ChainMiddlewares(
+		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+		common.ValidatePermissions([]string{"parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+	)
 
-	mux.Handle("/v0.1/parties/", common.AddMiddleware(hrlParty.RateLimit(pp), common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"parties:cud", "parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+	mux.Handle("GET /v0.1/parties", mChainRead(http.HandlerFunc(pp.GetParties)))
 
-	/*mux.Handle("/v0.1/users", common.AddMiddleware(hrlUser.RateLimit(usc),
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+	mux.Handle("POST /v0.1/parties/{id}", mChainCud(http.HandlerFunc(pp.CreateParty)))
+}
 
-	mux.Handle("/v0.1/users/", common.AddMiddleware(hrlUser.RateLimit(usc),
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
-
-	/* handler := http.HandlerFunc(usc.GetUsers)
-
-	 mux.Handle("GET /v0.1/users", common.AddMiddleware(handler,
-	common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
-
-	/*mux.Handle("GET /v0.1/users", common.AddMiddleware(hrlUser.RateLimit(usc),
-	common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
-
-	// mux.Handle("GET /v0.1/users", middlewareChain(usc.GetUsers))
-
+func initUsers(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Logger, u partyproto.UserServiceClient, wfHelper common.WfHelper, workflowClient client.Client) {
+	usc := NewUserController(log, u, h, workflowClient)
 	// Chain middlewares
-	umiddlewareChain1 := chainMiddlewares(
+	mChainCud := common.ChainMiddlewares(
 		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 		common.ValidatePermissions([]string{"users:cud"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)
 
-	umiddlewareChain2 := chainMiddlewares(
+	mChainRead := common.ChainMiddlewares(
 		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 		common.ValidatePermissions([]string{"users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)
 
-	mux.Handle("GET /v0.1/users", umiddlewareChain2(http.HandlerFunc(usc.GetUsers)))
+	mux.Handle("GET /v0.1/users", mChainRead(http.HandlerFunc(usc.GetUsers)))
 
-	mux.Handle("GET /v0.1/users/{id}", umiddlewareChain2(http.HandlerFunc(usc.GetUser)))
+	mux.Handle("GET /v0.1/users/{id}", mChainRead(http.HandlerFunc(usc.GetUser)))
 
-	mux.Handle("POST /v0.1/users/change-password", umiddlewareChain1(http.HandlerFunc(usc.ChangePassword)))
+	mux.Handle("POST /v0.1/users/change-password", mChainCud(http.HandlerFunc(usc.ChangePassword)))
 
-	mux.Handle("POST /v0.1/users/getuserbyemail", umiddlewareChain2(http.HandlerFunc(usc.GetUserByEmail)))
+	mux.Handle("POST /v0.1/users/getuserbyemail", mChainRead(http.HandlerFunc(usc.GetUserByEmail)))
 
-	mux.Handle("PUT /v0.1/users/{id}", umiddlewareChain1(http.HandlerFunc(usc.UpdateUser)))
+	mux.Handle("PUT /v0.1/users/{id}", mChainCud(http.HandlerFunc(usc.UpdateUser)))
 
-	mux.Handle("DELETE /v0.1/users/{id}", umiddlewareChain1(http.HandlerFunc(usc.DeleteUser)))
-
-	/*
-		   mux.Handle("GET /v0.1/users", common.AddMiddleware(http.HandlerFunc(usc.GetUsers),
-				common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
-
-		  mux.Handle("GET /v0.1/users/{id}", common.AddMiddleware(http.HandlerFunc(usc.GetUser),
-				common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
-
-			mux.Handle("POST /v0.1/users/change-password", common.AddMiddleware(http.HandlerFunc(usc.ChangePassword),
-				common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
-
-			mux.Handle("POST /v0.1/users/getuserbyemail", common.AddMiddleware(http.HandlerFunc(usc.GetUserByEmail),
-				common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
-
-			mux.Handle("PUT /v0.1/users/{id}", common.AddMiddleware(http.HandlerFunc(usc.UpdateUser),
-				common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
-
-			mux.Handle("DELETE /v0.1/users/{id}", common.AddMiddleware(http.HandlerFunc(usc.DeleteUser),
-				common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"users:cud", "users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
-
-	return nil
-}
-
-func chainMiddlewares(middlewares ...func(http.Handler) http.Handler) func(http.Handler) http.Handler {
-	return func(finalHandler http.Handler) http.Handler {
-		for i := len(middlewares) - 1; i >= 0; i-- {
-			finalHandler = middlewares[i](finalHandler)
-		}
-		return finalHandler
-	}
+	mux.Handle("DELETE /v0.1/users/{id}", mChainCud(http.HandlerFunc(usc.DeleteUser)))
 }
