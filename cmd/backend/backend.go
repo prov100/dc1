@@ -71,7 +71,7 @@ func main() {
 	}
 
 	auth0Config := common.Auth0Config{
-		Port:          serverOpt.ServerAddr, // port,
+		Port:          serverOpt.ApigServerAddr, // port,
 		SecureOptions: config.SecureOptions(),
 		CorsOptions:   config.CorsOptions(serverOpt.ClientOriginUrl),
 		Audience:      serverOpt.Auth0Audience, // audience,
@@ -139,9 +139,9 @@ func main() {
 
 		tlsConfig = getKeys(log, caCertPath, certPath, keyPath)
 
-		fmt.Println("main:serverOpt.ServerAddr", serverOpt.ServerAddr)
+		fmt.Println("main:serverOpt.ApigServerAddr", serverOpt.ApigServerAddr)
 		srv := &http.Server{
-			Addr:      ":" + serverOpt.ServerAddr,
+			Addr:      ":" + serverOpt.ApigServerAddr,
 			Handler:   finalHandler, // mux,
 			TLSConfig: tlsConfig,
 		}
@@ -179,7 +179,7 @@ func main() {
 	} else {
 
 		srv := &http.Server{
-			Addr:    ":" + serverOpt.ServerAddr,
+			Addr:    ":" + serverOpt.ApigServerAddr,
 			Handler: finalHandler, // mux,
 		}
 		fmt.Println("server started", srv)
@@ -199,7 +199,7 @@ func main() {
 			close(idleConnsClosed)
 		}()
 
-		fmt.Println("server started at port", serverOpt.ServerAddr)
+		fmt.Println("server started at port", serverOpt.ApigServerAddr)
 		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
 			// Error starting or closing listener:
 			log.Error("Error",

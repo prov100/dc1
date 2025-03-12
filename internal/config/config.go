@@ -78,18 +78,20 @@ type MailerOptions struct {
 
 // ServerOptions - for server config
 type ServerOptions struct {
-	ServerAddr      string `mapstructure:"server_addr"`
-	ServerTLS       string `mapstructure:"server_tls"`
-	CaCertPath      string `mapstructure:"ca_cert_path"`
-	CertPath        string `mapstructure:"cert_path"`
-	KeyPath         string `mapstructure:"key_path"`
-	ClientOriginUrl string `mapstructure:"client_original_url"`
-	Auth0Audience   string `mapstructure:"auth0_audience"`
-	Auth0Domain     string `mapstructure:"auth0_domain"`
-	Auth0ClientId   string `mapstructure:"auth0_client_id"`
-	Auth0Connection string `mapstructure:"auth0_connection"`
-	Auth0MgmtToken  string `mapstructure:"auth0_mgmt_token"`
-	Auth0ApiId      string `mapstructure:"auth0_api_id"`
+	// ServerAddr      string `mapstructure:"server_addr"`
+	BackendServerAddr string `mapstructure:"backend_server_addr"`
+	ApigServerAddr    string `mapstructure:"apig_server_addr"`
+	ServerTLS         string `mapstructure:"server_tls"`
+	CaCertPath        string `mapstructure:"ca_cert_path"`
+	CertPath          string `mapstructure:"cert_path"`
+	KeyPath           string `mapstructure:"key_path"`
+	ClientOriginUrl   string `mapstructure:"client_original_url"`
+	Auth0Audience     string `mapstructure:"auth0_audience"`
+	Auth0Domain       string `mapstructure:"auth0_domain"`
+	Auth0ClientId     string `mapstructure:"auth0_client_id"`
+	Auth0Connection   string `mapstructure:"auth0_connection"`
+	Auth0MgmtToken    string `mapstructure:"auth0_mgmt_token"`
+	Auth0ApiId        string `mapstructure:"auth0_api_id"`
 }
 
 // RateOptions - for rate limiting requests
@@ -271,7 +273,9 @@ func GetMailerConfig(log *zap.Logger, v *viper.Viper) (*MailerOptions, error) {
 // GetServerConfig -- read server config options
 func GetServerConfig(log *zap.Logger, v *viper.Viper) (*ServerOptions, error) {
 	serverOpt := ServerOptions{}
-	serverOpt.ServerAddr = v.GetString("SC_DCSA_SERVER_ADDRESS")
+	// serverOpt.ServerAddr = v.GetString("SC_DCSA_SERVER_ADDRESS")
+	serverOpt.BackendServerAddr = v.GetString("SC_DCSA_BACKEND_SERVER_ADDRESS")
+	serverOpt.ApigServerAddr = v.GetString("SC_DCSA_APIG_SERVER_ADDRESS")
 	serverOpt.ServerTLS = v.GetString("SC_DCSA_SERVER_TLS")
 	serverOpt.CaCertPath = v.GetString("SC_DCSA_CA_CERT_PATH")
 	serverOpt.CertPath = v.GetString("SC_DCSA_CERT_PATH")
