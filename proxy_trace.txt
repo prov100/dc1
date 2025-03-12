@@ -1,14 +1,56 @@
-rani2@rani:~/go/src/github.com/prov100/dc1$ ^C
-rani2@rani:~/go/src/github.com/prov100/dc1$ source cadence-dcsa.sh
+rani2@rani:~/go/src/github.com/prov100/dc1$ go run cmd/backend/backend.go
+config/config.go:GetViper() configFilePath /home/rani2/go/src/github.com/prov100/dc1/internal/config
+config/config.go:getLogWriter() file &{0xc0003843c0}
+config/config.go:getLogWriter() err <nil>
+config/config.go:SetUpLogging() writerSyncer is &{0xc0003843c0}
+config/config.go:SetUpLogging() encoder is {0xc00035c340}
+config/config.go:SetUpLogging() core is &{debug {0xc00035c340} 0xc000322240}
+config/config.go:SetUpLogging() log is &{0xc0003b6a80 false false <nil> <nil>  0xc0003425e8 -1 0 {}}
+2025-03-12T16:57:27.814+0530	INFO	common/wf_helper.go:115	Logger created.
+2025-03-12T16:57:27.814+0530	DEBUG	common/wf_factory.go:162	Creating RPC dispatcher outbound	{"ServiceName": "cadence-frontend", "HostPort": "127.0.0.1:7833"}
+2025-03-12T16:57:27.816+0530	INFO	common/wf_helper.go:168	Domain successfully registered.	{"Domain": "samples-domain"}
+server started &{:9061 0xc0003dc180 false <nil> 0s 0s 0s 0s 0 map[] <nil> <nil> <nil> <nil> <nil> <nil> {{} 0} {{} 0} {{} {{} 0} {{} {0 0}}} <nil> {{} {0 0}} map[] map[] [] {{} {{} {} 0} 0}}
+server started at port 9061
+UserController GetUsers
+UserController GetUsers r is
+common/auth.go GetProtoMd r &{GET /v0.1/users HTTP/1.1 1 1 map[Accept:[application/json, text/plain, */*] Accept-Encoding:[gzip, deflate, br, zstd] Accept-Language:[en-US,en;q=0.5] Authorization:[Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1TU09vRW41dU5JbDAzeVN3d3FJbSJ9.eyJlbWFpbCI6InNwcm92MzAwQGdtYWlsLmNvbSIsImlzcyI6Imh0dHBzOi8vZGV2LThsM3VhMHQ4ZmhtaDA4dnEudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDY2ZmQwNmQwYmZlYTc4YTgyYmI0MjQ1OSIsImF1ZCI6WyJodHRwczovL3NjZGNzYS5jb20iLCJodHRwczovL2Rldi04bDN1YTB0OGZobWgwOHZxLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE3NDE3NzQ5NDIsImV4cCI6MTc0MTg2MTM0Miwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImF6cCI6IlFmVERlQkJnZTBDcGpJdmFNdnpiZ3poYTBhVE0yblVlIiwicGVybWlzc2lvbnMiOlsiYmtnOmN1ZCIsImJrZzpyZWFkIiwiYmtnczpjdWQiLCJia2dzOnJlYWQiLCJia2dzczpjdWQiLCJia2dzczpyZWFkIiwiY2hhcmdlOmN1ZCIsImNoYXJnZTpyZWFkIiwiZXZlbnQ6Y3VkIiwiZXZlbnQ6cmVhZCIsImV2ZW50c3ViOmN1ZCIsImV2ZW50c3ViOnJlYWQiLCJpc3I6Y3VkIiwiaXNycjpjdWQiLCJpc3I6cmVhZCIsImlzcnI6cmVhZCIsImxlZzpjdWQiLCJsZWc6cmVhZCIsInBhcnRpZXM6Y3VkIiwicGFydGllczpyZWFkIiwicmVmZXI6Y3VkIiwicmVmZXI6cmVhZCIsInNlYWw6Y3VkIiwic2VhbDpyZWFkIiwic2hpcHBpbmc6Y3VkIiwic2hpcHBpbmdpbnN0cjpjdWQiLCJzaGlwcGluZ2luc3RyOnJlYWQiLCJzaGlwcGluZzpyZWFkIiwic3J2OmN1ZCIsInNydjpyZWFkIiwic3J2c2NoZWQ6Y3VkIiwic3J2c2NoZWQ6cmVhZCIsInN1cnJlcWFuczpjdWQiLCJzdXJyZXFhbnM6cmVhZCIsInN1cnJlcTpjdWQiLCJzdXJyZXE6cmVhZCIsInRyYW5zcG9ydGNhbGw6Y3VkIiwidHJhbnNwb3J0Y2FsbDpyZWFkIiwidHJhbnNwb3J0ZG9jOmN1ZCIsInRyYW5zcG9ydGRvYzpyZWFkIiwidHM6Y3VkIiwidHM6cmVhZCIsInVzZXJzOmN1ZCIsInVzZXJzOnJlYWQiLCJ1dGU6Y3VkIiwidXRlOnJlYWQiLCJ2ZXNzZWxzY2hlZDpjdWQiLCJ2ZXNzZWxzY2hlZDpyZWFkIiwidm95YWdlOmN1ZCIsInZveWFnZTpyZWFkIl19.T3Gqb2s2GpNfilMzwZsLVYC1epEKNkZv0GSoZgsVg3X46lv7OxuHeNkVSMo7INPTC6DiWqZjXebRemN4q70u6b4laLJJsi8Z70xVqLcy1CAMUpvcFBZjwaLt3DQGUvmFiQoqL1GqMvNYbu0eGc0akqbV_AGLoi3n73GIAt_xT95ofBBdvOgjsueqz4oZ5Nlpwf9acu_XpadANvyYhZHNljS8UVj-3xQpmYzjJix_aLi1eSixKs8DhUkrLzzCX7kVXl3sKLQujgq3jQ7USkN3oIUAE5i0VuCYZNqaNAFFgQyTMoJBsTDL2bgS6wKiEC8mFap67QTIjNLs5g-_WoxjLw] Origin:[http://localhost:9041] Priority:[u=0] Referer:[http://localhost:9041/] Sec-Fetch-Dest:[empty] Sec-Fetch-Mode:[cors] Sec-Fetch-Site:[same-site] User-Agent:[Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0] X-Forwarded-For:[127.0.0.1]] {} <nil> 0 [] false localhost:9060 map[] map[] <nil> map[] 127.0.0.1:49816 /v0.1/users <nil> <nil> <nil> GET /v0.1/users 0xc0004ac5a0 0xc0004801e0 [] map[]}
+common/auth.go GetAuthData
+2025/03/12 16:57:46 http: panic serving 127.0.0.1:49816: interface conversion: interface {} is nil, not common.ContextStruct
+goroutine 58 [running]:
+net/http.(*conn).serve.func1()
+	/usr/local/go/src/net/http/server.go:1947 +0xbe
+panic({0x1197c80?, 0xc000485140?})
+	/usr/local/go/src/runtime/panic.go:792 +0x132
+github.com/prov100/dc1/internal/common.GetAuthData(0xc0004cc280)
+	/home/rani2/go/src/github.com/prov100/dc1/internal/common/auth.go:84 +0x17f
+github.com/prov100/dc1/internal/common.GetProtoMd(0xc0004cc280)
+	/home/rani2/go/src/github.com/prov100/dc1/internal/common/auth.go:132 +0xb8
+github.com/prov100/dc1/internal/controllers/partycontrollers.(*UserController).GetUsers(0xc0004ae480, {0x151cb10, 0xc0004f2000}, 0xc0004cc280)
+	/home/rani2/go/src/github.com/prov100/dc1/internal/controllers/partycontrollers/user.go:177 +0x105
+net/http.HandlerFunc.ServeHTTP(0xc0003dc180?, {0x151cb10?, 0xc0004f2000?}, 0x6cd036?)
+	/usr/local/go/src/net/http/server.go:2294 +0x29
+net/http.(*ServeMux).ServeHTTP(0x474479?, {0x151cb10, 0xc0004f2000}, 0xc0004cc280)
+	/usr/local/go/src/net/http/server.go:2822 +0x1c4
+net/http.serverHandler.ServeHTTP({0xc000485020?}, {0x151cb10?, 0xc0004f2000?}, 0x6?)
+	/usr/local/go/src/net/http/server.go:3301 +0x8e
+net/http.(*conn).serve(0xc0004b85a0, {0x1522e28, 0xc000484f30})
+	/usr/local/go/src/net/http/server.go:2102 +0x625
+created by net/http.(*Server).Serve in goroutine 1
+	/usr/local/go/src/net/http/server.go:3454 +0x485
+
+
+
+===============================================
+
 rani2@rani:~/go/src/github.com/prov100/dc1$ go run cmd/main.go
 main started
 config/config.go:GetViper() configFilePath /home/rani2/go/src/github.com/prov100/dc1/internal/config
-config/config.go:getLogWriter() file &{0xc000111c20}
+config/config.go:getLogWriter() file &{0xc000110420}
 config/config.go:getLogWriter() err <nil>
-config/config.go:SetUpLogging() writerSyncer is &{0xc000111c20}
-config/config.go:SetUpLogging() encoder is {0xc00014ca00}
-config/config.go:SetUpLogging() core is &{debug {0xc00014ca00} 0xc000124258}
-config/config.go:SetUpLogging() log is &{0xc0003a4cc0 false false <nil> <nil>  0xc00014b110 -1 0 {}}
+config/config.go:SetUpLogging() writerSyncer is &{0xc000110420}
+config/config.go:SetUpLogging() encoder is {0xc00015e340}
+config/config.go:SetUpLogging() core is &{debug {0xc00015e340} 0xc000124240}
+config/config.go:SetUpLogging() log is &{0xc0003b6a80 false false <nil> <nil>  0xc0001445e8 -1 0 {}}
 ReverseProxy started
 ReverseProxy target http://localhost:9061
 ReverseProxy targetURL http://localhost:9061
@@ -24,7 +66,9 @@ server started &{:9060 0xf2dd00 false <nil> 0s 0s 0s 0s 0 map[] <nil> <nil> <nil
 server started at port 9060
 
 
-r is &{GET /v0.1/users HTTP/1.1 1 1 map[Accept:[application/json, text/plain, */*] Accept-Encoding:[gzip, deflate, br, zstd] Accept-Language:[en-US,en;q=0.5] Authorization:[Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1TU09vRW41dU5JbDAzeVN3d3FJbSJ9.eyJlbWFpbCI6InNwcm92MzAwQGdtYWlsLmNvbSIsImlzcyI6Imh0dHBzOi8vZGV2LThsM3VhMHQ4ZmhtaDA4dnEudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDY2ZmQwNmQwYmZlYTc4YTgyYmI0MjQ1OSIsImF1ZCI6WyJodHRwczovL3NjZGNzYS5jb20iLCJodHRwczovL2Rldi04bDN1YTB0OGZobWgwOHZxLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE3NDE3NzQ5NDIsImV4cCI6MTc0MTg2MTM0Miwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImF6cCI6IlFmVERlQkJnZTBDcGpJdmFNdnpiZ3poYTBhVE0yblVlIiwicGVybWlzc2lvbnMiOlsiYmtnOmN1ZCIsImJrZzpyZWFkIiwiYmtnczpjdWQiLCJia2dzOnJlYWQiLCJia2dzczpjdWQiLCJia2dzczpyZWFkIiwiY2hhcmdlOmN1ZCIsImNoYXJnZTpyZWFkIiwiZXZlbnQ6Y3VkIiwiZXZlbnQ6cmVhZCIsImV2ZW50c3ViOmN1ZCIsImV2ZW50c3ViOnJlYWQiLCJpc3I6Y3VkIiwiaXNycjpjdWQiLCJpc3I6cmVhZCIsImlzcnI6cmVhZCIsImxlZzpjdWQiLCJsZWc6cmVhZCIsInBhcnRpZXM6Y3VkIiwicGFydGllczpyZWFkIiwicmVmZXI6Y3VkIiwicmVmZXI6cmVhZCIsInNlYWw6Y3VkIiwic2VhbDpyZWFkIiwic2hpcHBpbmc6Y3VkIiwic2hpcHBpbmdpbnN0cjpjdWQiLCJzaGlwcGluZ2luc3RyOnJlYWQiLCJzaGlwcGluZzpyZWFkIiwic3J2OmN1ZCIsInNydjpyZWFkIiwic3J2c2NoZWQ6Y3VkIiwic3J2c2NoZWQ6cmVhZCIsInN1cnJlcWFuczpjdWQiLCJzdXJyZXFhbnM6cmVhZCIsInN1cnJlcTpjdWQiLCJzdXJyZXE6cmVhZCIsInRyYW5zcG9ydGNhbGw6Y3VkIiwidHJhbnNwb3J0Y2FsbDpyZWFkIiwidHJhbnNwb3J0ZG9jOmN1ZCIsInRyYW5zcG9ydGRvYzpyZWFkIiwidHM6Y3VkIiwidHM6cmVhZCIsInVzZXJzOmN1ZCIsInVzZXJzOnJlYWQiLCJ1dGU6Y3VkIiwidXRlOnJlYWQiLCJ2ZXNzZWxzY2hlZDpjdWQiLCJ2ZXNzZWxzY2hlZDpyZWFkIiwidm95YWdlOmN1ZCIsInZveWFnZTpyZWFkIl19.T3Gqb2s2GpNfilMzwZsLVYC1epEKNkZv0GSoZgsVg3X46lv7OxuHeNkVSMo7INPTC6DiWqZjXebRemN4q70u6b4laLJJsi8Z70xVqLcy1CAMUpvcFBZjwaLt3DQGUvmFiQoqL1GqMvNYbu0eGc0akqbV_AGLoi3n73GIAt_xT95ofBBdvOgjsueqz4oZ5Nlpwf9acu_XpadANvyYhZHNljS8UVj-3xQpmYzjJix_aLi1eSixKs8DhUkrLzzCX7kVXl3sKLQujgq3jQ7USkN3oIUAE5i0VuCYZNqaNAFFgQyTMoJBsTDL2bgS6wKiEC8mFap67QTIjNLs5g-_WoxjLw] Connection:[keep-alive] Origin:[http://localhost:9041] Referer:[http://localhost:9041/] Sec-Fetch-Dest:[empty] Sec-Fetch-Mode:[cors] Sec-Fetch-Site:[same-site] User-Agent:[Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0]] {} <nil> 0 [] false localhost:9060 map[] map[] <nil> map[] 127.0.0.1:40330 /v0.1/users <nil> <nil> <nil>  0xc000340050 <nil> [] map[]}
+
+
+r is &{GET /v0.1/users HTTP/1.1 1 1 map[Accept:[application/json, text/plain, */*] Accept-Encoding:[gzip, deflate, br, zstd] Accept-Language:[en-US,en;q=0.5] Authorization:[Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1TU09vRW41dU5JbDAzeVN3d3FJbSJ9.eyJlbWFpbCI6InNwcm92MzAwQGdtYWlsLmNvbSIsImlzcyI6Imh0dHBzOi8vZGV2LThsM3VhMHQ4ZmhtaDA4dnEudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDY2ZmQwNmQwYmZlYTc4YTgyYmI0MjQ1OSIsImF1ZCI6WyJodHRwczovL3NjZGNzYS5jb20iLCJodHRwczovL2Rldi04bDN1YTB0OGZobWgwOHZxLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE3NDE3NzQ5NDIsImV4cCI6MTc0MTg2MTM0Miwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImF6cCI6IlFmVERlQkJnZTBDcGpJdmFNdnpiZ3poYTBhVE0yblVlIiwicGVybWlzc2lvbnMiOlsiYmtnOmN1ZCIsImJrZzpyZWFkIiwiYmtnczpjdWQiLCJia2dzOnJlYWQiLCJia2dzczpjdWQiLCJia2dzczpyZWFkIiwiY2hhcmdlOmN1ZCIsImNoYXJnZTpyZWFkIiwiZXZlbnQ6Y3VkIiwiZXZlbnQ6cmVhZCIsImV2ZW50c3ViOmN1ZCIsImV2ZW50c3ViOnJlYWQiLCJpc3I6Y3VkIiwiaXNycjpjdWQiLCJpc3I6cmVhZCIsImlzcnI6cmVhZCIsImxlZzpjdWQiLCJsZWc6cmVhZCIsInBhcnRpZXM6Y3VkIiwicGFydGllczpyZWFkIiwicmVmZXI6Y3VkIiwicmVmZXI6cmVhZCIsInNlYWw6Y3VkIiwic2VhbDpyZWFkIiwic2hpcHBpbmc6Y3VkIiwic2hpcHBpbmdpbnN0cjpjdWQiLCJzaGlwcGluZ2luc3RyOnJlYWQiLCJzaGlwcGluZzpyZWFkIiwic3J2OmN1ZCIsInNydjpyZWFkIiwic3J2c2NoZWQ6Y3VkIiwic3J2c2NoZWQ6cmVhZCIsInN1cnJlcWFuczpjdWQiLCJzdXJyZXFhbnM6cmVhZCIsInN1cnJlcTpjdWQiLCJzdXJyZXE6cmVhZCIsInRyYW5zcG9ydGNhbGw6Y3VkIiwidHJhbnNwb3J0Y2FsbDpyZWFkIiwidHJhbnNwb3J0ZG9jOmN1ZCIsInRyYW5zcG9ydGRvYzpyZWFkIiwidHM6Y3VkIiwidHM6cmVhZCIsInVzZXJzOmN1ZCIsInVzZXJzOnJlYWQiLCJ1dGU6Y3VkIiwidXRlOnJlYWQiLCJ2ZXNzZWxzY2hlZDpjdWQiLCJ2ZXNzZWxzY2hlZDpyZWFkIiwidm95YWdlOmN1ZCIsInZveWFnZTpyZWFkIl19.T3Gqb2s2GpNfilMzwZsLVYC1epEKNkZv0GSoZgsVg3X46lv7OxuHeNkVSMo7INPTC6DiWqZjXebRemN4q70u6b4laLJJsi8Z70xVqLcy1CAMUpvcFBZjwaLt3DQGUvmFiQoqL1GqMvNYbu0eGc0akqbV_AGLoi3n73GIAt_xT95ofBBdvOgjsueqz4oZ5Nlpwf9acu_XpadANvyYhZHNljS8UVj-3xQpmYzjJix_aLi1eSixKs8DhUkrLzzCX7kVXl3sKLQujgq3jQ7USkN3oIUAE5i0VuCYZNqaNAFFgQyTMoJBsTDL2bgS6wKiEC8mFap67QTIjNLs5g-_WoxjLw] Connection:[keep-alive] Origin:[http://localhost:9041] Priority:[u=0] Referer:[http://localhost:9041/] Sec-Fetch-Dest:[empty] Sec-Fetch-Mode:[cors] Sec-Fetch-Site:[same-site] User-Agent:[Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0]] {} <nil> 0 [] false localhost:9060 map[] map[] <nil> map[] 127.0.0.1:51070 /v0.1/users <nil> <nil> <nil>  0xc00040c050 <nil> [] map[]}
 internal/common/middleware.go EnsureValidToken3333
 internal/common/middleware.go audience is https://scdcsa.com
 internal/common/middleware.go domain is dev-8l3ua0t8fhmh08vq.us.auth0.com
@@ -37,40 +81,5 @@ internal/common/middleware.go tokenString eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsIm
 tokenClaims.CustomClaims &{[bkg:cud bkg:read bkgs:cud bkgs:read bkgss:cud bkgss:read charge:cud charge:read event:cud event:read eventsub:cud eventsub:read isr:cud isrr:cud isr:read isrr:read leg:cud leg:read parties:cud parties:read refer:cud refer:read seal:cud seal:read shipping:cud shippinginstr:cud shippinginstr:read shipping:read srv:cud srv:read srvsched:cud srvsched:read surreqans:cud surreqans:read surreq:cud surreq:read transportcall:cud transportcall:read transportdoc:cud transportdoc:read ts:cud ts:read users:cud users:read ute:cud ute:read vesselsched:cud vesselsched:read voyage:cud voyage:read] sprov300@gmail.com}
 email is sprov300@gmail.com
 v.Email sprov300@gmail.com
-r is &{GET /v0.1/users/ HTTP/1.1 1 1 map[Accept:[application/json, text/plain, */*] Accept-Encoding:[gzip, deflate, br, zstd] Accept-Language:[en-US,en;q=0.5] Authorization:[Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1TU09vRW41dU5JbDAzeVN3d3FJbSJ9.eyJlbWFpbCI6InNwcm92MzAwQGdtYWlsLmNvbSIsImlzcyI6Imh0dHBzOi8vZGV2LThsM3VhMHQ4ZmhtaDA4dnEudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDY2ZmQwNmQwYmZlYTc4YTgyYmI0MjQ1OSIsImF1ZCI6WyJodHRwczovL3NjZGNzYS5jb20iLCJodHRwczovL2Rldi04bDN1YTB0OGZobWgwOHZxLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE3NDE3NzQ5NDIsImV4cCI6MTc0MTg2MTM0Miwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImF6cCI6IlFmVERlQkJnZTBDcGpJdmFNdnpiZ3poYTBhVE0yblVlIiwicGVybWlzc2lvbnMiOlsiYmtnOmN1ZCIsImJrZzpyZWFkIiwiYmtnczpjdWQiLCJia2dzOnJlYWQiLCJia2dzczpjdWQiLCJia2dzczpyZWFkIiwiY2hhcmdlOmN1ZCIsImNoYXJnZTpyZWFkIiwiZXZlbnQ6Y3VkIiwiZXZlbnQ6cmVhZCIsImV2ZW50c3ViOmN1ZCIsImV2ZW50c3ViOnJlYWQiLCJpc3I6Y3VkIiwiaXNycjpjdWQiLCJpc3I6cmVhZCIsImlzcnI6cmVhZCIsImxlZzpjdWQiLCJsZWc6cmVhZCIsInBhcnRpZXM6Y3VkIiwicGFydGllczpyZWFkIiwicmVmZXI6Y3VkIiwicmVmZXI6cmVhZCIsInNlYWw6Y3VkIiwic2VhbDpyZWFkIiwic2hpcHBpbmc6Y3VkIiwic2hpcHBpbmdpbnN0cjpjdWQiLCJzaGlwcGluZ2luc3RyOnJlYWQiLCJzaGlwcGluZzpyZWFkIiwic3J2OmN1ZCIsInNydjpyZWFkIiwic3J2c2NoZWQ6Y3VkIiwic3J2c2NoZWQ6cmVhZCIsInN1cnJlcWFuczpjdWQiLCJzdXJyZXFhbnM6cmVhZCIsInN1cnJlcTpjdWQiLCJzdXJyZXE6cmVhZCIsInRyYW5zcG9ydGNhbGw6Y3VkIiwidHJhbnNwb3J0Y2FsbDpyZWFkIiwidHJhbnNwb3J0ZG9jOmN1ZCIsInRyYW5zcG9ydGRvYzpyZWFkIiwidHM6Y3VkIiwidHM6cmVhZCIsInVzZXJzOmN1ZCIsInVzZXJzOnJlYWQiLCJ1dGU6Y3VkIiwidXRlOnJlYWQiLCJ2ZXNzZWxzY2hlZDpjdWQiLCJ2ZXNzZWxzY2hlZDpyZWFkIiwidm95YWdlOmN1ZCIsInZveWFnZTpyZWFkIl19.T3Gqb2s2GpNfilMzwZsLVYC1epEKNkZv0GSoZgsVg3X46lv7OxuHeNkVSMo7INPTC6DiWqZjXebRemN4q70u6b4laLJJsi8Z70xVqLcy1CAMUpvcFBZjwaLt3DQGUvmFiQoqL1GqMvNYbu0eGc0akqbV_AGLoi3n73GIAt_xT95ofBBdvOgjsueqz4oZ5Nlpwf9acu_XpadANvyYhZHNljS8UVj-3xQpmYzjJix_aLi1eSixKs8DhUkrLzzCX7kVXl3sKLQujgq3jQ7USkN3oIUAE5i0VuCYZNqaNAFFgQyTMoJBsTDL2bgS6wKiEC8mFap67QTIjNLs5g-_WoxjLw] Connection:[keep-alive] Origin:[http://localhost:9041] Referer:[http://localhost:9041/] Sec-Fetch-Dest:[empty] Sec-Fetch-Mode:[cors] Sec-Fetch-Site:[cross-site] User-Agent:[Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0]] {} <nil> 0 [] false localhost:9060 map[] map[] <nil> map[] 127.0.0.1:40330 /v0.1/users/ <nil> <nil> <nil>  0xc000118730 <nil> [] map[]}
-internal/common/middleware.go EnsureValidToken3333
-internal/common/middleware.go audience is https://scdcsa.com
-internal/common/middleware.go domain is dev-8l3ua0t8fhmh08vq.us.auth0.com
-internal/common/middleware.go authHeaderParts [Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1TU09vRW41dU5JbDAzeVN3d3FJbSJ9.eyJlbWFpbCI6InNwcm92MzAwQGdtYWlsLmNvbSIsImlzcyI6Imh0dHBzOi8vZGV2LThsM3VhMHQ4ZmhtaDA4dnEudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDY2ZmQwNmQwYmZlYTc4YTgyYmI0MjQ1OSIsImF1ZCI6WyJodHRwczovL3NjZGNzYS5jb20iLCJodHRwczovL2Rldi04bDN1YTB0OGZobWgwOHZxLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE3NDE3NzQ5NDIsImV4cCI6MTc0MTg2MTM0Miwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImF6cCI6IlFmVERlQkJnZTBDcGpJdmFNdnpiZ3poYTBhVE0yblVlIiwicGVybWlzc2lvbnMiOlsiYmtnOmN1ZCIsImJrZzpyZWFkIiwiYmtnczpjdWQiLCJia2dzOnJlYWQiLCJia2dzczpjdWQiLCJia2dzczpyZWFkIiwiY2hhcmdlOmN1ZCIsImNoYXJnZTpyZWFkIiwiZXZlbnQ6Y3VkIiwiZXZlbnQ6cmVhZCIsImV2ZW50c3ViOmN1ZCIsImV2ZW50c3ViOnJlYWQiLCJpc3I6Y3VkIiwiaXNycjpjdWQiLCJpc3I6cmVhZCIsImlzcnI6cmVhZCIsImxlZzpjdWQiLCJsZWc6cmVhZCIsInBhcnRpZXM6Y3VkIiwicGFydGllczpyZWFkIiwicmVmZXI6Y3VkIiwicmVmZXI6cmVhZCIsInNlYWw6Y3VkIiwic2VhbDpyZWFkIiwic2hpcHBpbmc6Y3VkIiwic2hpcHBpbmdpbnN0cjpjdWQiLCJzaGlwcGluZ2luc3RyOnJlYWQiLCJzaGlwcGluZzpyZWFkIiwic3J2OmN1ZCIsInNydjpyZWFkIiwic3J2c2NoZWQ6Y3VkIiwic3J2c2NoZWQ6cmVhZCIsInN1cnJlcWFuczpjdWQiLCJzdXJyZXFhbnM6cmVhZCIsInN1cnJlcTpjdWQiLCJzdXJyZXE6cmVhZCIsInRyYW5zcG9ydGNhbGw6Y3VkIiwidHJhbnNwb3J0Y2FsbDpyZWFkIiwidHJhbnNwb3J0ZG9jOmN1ZCIsInRyYW5zcG9ydGRvYzpyZWFkIiwidHM6Y3VkIiwidHM6cmVhZCIsInVzZXJzOmN1ZCIsInVzZXJzOnJlYWQiLCJ1dGU6Y3VkIiwidXRlOnJlYWQiLCJ2ZXNzZWxzY2hlZDpjdWQiLCJ2ZXNzZWxzY2hlZDpyZWFkIiwidm95YWdlOmN1ZCIsInZveWFnZTpyZWFkIl19.T3Gqb2s2GpNfilMzwZsLVYC1epEKNkZv0GSoZgsVg3X46lv7OxuHeNkVSMo7INPTC6DiWqZjXebRemN4q70u6b4laLJJsi8Z70xVqLcy1CAMUpvcFBZjwaLt3DQGUvmFiQoqL1GqMvNYbu0eGc0akqbV_AGLoi3n73GIAt_xT95ofBBdvOgjsueqz4oZ5Nlpwf9acu_XpadANvyYhZHNljS8UVj-3xQpmYzjJix_aLi1eSixKs8DhUkrLzzCX7kVXl3sKLQujgq3jQ7USkN3oIUAE5i0VuCYZNqaNAFFgQyTMoJBsTDL2bgS6wKiEC8mFap67QTIjNLs5g-_WoxjLw]
-internal/common/middleware.go authHeaderParts[1] eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1TU09vRW41dU5JbDAzeVN3d3FJbSJ9.eyJlbWFpbCI6InNwcm92MzAwQGdtYWlsLmNvbSIsImlzcyI6Imh0dHBzOi8vZGV2LThsM3VhMHQ4ZmhtaDA4dnEudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDY2ZmQwNmQwYmZlYTc4YTgyYmI0MjQ1OSIsImF1ZCI6WyJodHRwczovL3NjZGNzYS5jb20iLCJodHRwczovL2Rldi04bDN1YTB0OGZobWgwOHZxLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE3NDE3NzQ5NDIsImV4cCI6MTc0MTg2MTM0Miwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImF6cCI6IlFmVERlQkJnZTBDcGpJdmFNdnpiZ3poYTBhVE0yblVlIiwicGVybWlzc2lvbnMiOlsiYmtnOmN1ZCIsImJrZzpyZWFkIiwiYmtnczpjdWQiLCJia2dzOnJlYWQiLCJia2dzczpjdWQiLCJia2dzczpyZWFkIiwiY2hhcmdlOmN1ZCIsImNoYXJnZTpyZWFkIiwiZXZlbnQ6Y3VkIiwiZXZlbnQ6cmVhZCIsImV2ZW50c3ViOmN1ZCIsImV2ZW50c3ViOnJlYWQiLCJpc3I6Y3VkIiwiaXNycjpjdWQiLCJpc3I6cmVhZCIsImlzcnI6cmVhZCIsImxlZzpjdWQiLCJsZWc6cmVhZCIsInBhcnRpZXM6Y3VkIiwicGFydGllczpyZWFkIiwicmVmZXI6Y3VkIiwicmVmZXI6cmVhZCIsInNlYWw6Y3VkIiwic2VhbDpyZWFkIiwic2hpcHBpbmc6Y3VkIiwic2hpcHBpbmdpbnN0cjpjdWQiLCJzaGlwcGluZ2luc3RyOnJlYWQiLCJzaGlwcGluZzpyZWFkIiwic3J2OmN1ZCIsInNydjpyZWFkIiwic3J2c2NoZWQ6Y3VkIiwic3J2c2NoZWQ6cmVhZCIsInN1cnJlcWFuczpjdWQiLCJzdXJyZXFhbnM6cmVhZCIsInN1cnJlcTpjdWQiLCJzdXJyZXE6cmVhZCIsInRyYW5zcG9ydGNhbGw6Y3VkIiwidHJhbnNwb3J0Y2FsbDpyZWFkIiwidHJhbnNwb3J0ZG9jOmN1ZCIsInRyYW5zcG9ydGRvYzpyZWFkIiwidHM6Y3VkIiwidHM6cmVhZCIsInVzZXJzOmN1ZCIsInVzZXJzOnJlYWQiLCJ1dGU6Y3VkIiwidXRlOnJlYWQiLCJ2ZXNzZWxzY2hlZDpjdWQiLCJ2ZXNzZWxzY2hlZDpyZWFkIiwidm95YWdlOmN1ZCIsInZveWFnZTpyZWFkIl19.T3Gqb2s2GpNfilMzwZsLVYC1epEKNkZv0GSoZgsVg3X46lv7OxuHeNkVSMo7INPTC6DiWqZjXebRemN4q70u6b4laLJJsi8Z70xVqLcy1CAMUpvcFBZjwaLt3DQGUvmFiQoqL1GqMvNYbu0eGc0akqbV_AGLoi3n73GIAt_xT95ofBBdvOgjsueqz4oZ5Nlpwf9acu_XpadANvyYhZHNljS8UVj-3xQpmYzjJix_aLi1eSixKs8DhUkrLzzCX7kVXl3sKLQujgq3jQ7USkN3oIUAE5i0VuCYZNqaNAFFgQyTMoJBsTDL2bgS6wKiEC8mFap67QTIjNLs5g-_WoxjLw
-internal/common/middleware.go issuerURL is https://dev-8l3ua0t8fhmh08vq.us.auth0.com/
-internal/common/middleware.go EnsureValidToken4444444444
-internal/common/middleware.go EnsureValidToken middleware &{0xf2ff20 0xf2fc20 0xa84ca0 false true <nil>}
-internal/common/middleware.go tokenString eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1TU09vRW41dU5JbDAzeVN3d3FJbSJ9.eyJlbWFpbCI6InNwcm92MzAwQGdtYWlsLmNvbSIsImlzcyI6Imh0dHBzOi8vZGV2LThsM3VhMHQ4ZmhtaDA4dnEudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDY2ZmQwNmQwYmZlYTc4YTgyYmI0MjQ1OSIsImF1ZCI6WyJodHRwczovL3NjZGNzYS5jb20iLCJodHRwczovL2Rldi04bDN1YTB0OGZobWgwOHZxLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE3NDE3NzQ5NDIsImV4cCI6MTc0MTg2MTM0Miwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImF6cCI6IlFmVERlQkJnZTBDcGpJdmFNdnpiZ3poYTBhVE0yblVlIiwicGVybWlzc2lvbnMiOlsiYmtnOmN1ZCIsImJrZzpyZWFkIiwiYmtnczpjdWQiLCJia2dzOnJlYWQiLCJia2dzczpjdWQiLCJia2dzczpyZWFkIiwiY2hhcmdlOmN1ZCIsImNoYXJnZTpyZWFkIiwiZXZlbnQ6Y3VkIiwiZXZlbnQ6cmVhZCIsImV2ZW50c3ViOmN1ZCIsImV2ZW50c3ViOnJlYWQiLCJpc3I6Y3VkIiwiaXNycjpjdWQiLCJpc3I6cmVhZCIsImlzcnI6cmVhZCIsImxlZzpjdWQiLCJsZWc6cmVhZCIsInBhcnRpZXM6Y3VkIiwicGFydGllczpyZWFkIiwicmVmZXI6Y3VkIiwicmVmZXI6cmVhZCIsInNlYWw6Y3VkIiwic2VhbDpyZWFkIiwic2hpcHBpbmc6Y3VkIiwic2hpcHBpbmdpbnN0cjpjdWQiLCJzaGlwcGluZ2luc3RyOnJlYWQiLCJzaGlwcGluZzpyZWFkIiwic3J2OmN1ZCIsInNydjpyZWFkIiwic3J2c2NoZWQ6Y3VkIiwic3J2c2NoZWQ6cmVhZCIsInN1cnJlcWFuczpjdWQiLCJzdXJyZXFhbnM6cmVhZCIsInN1cnJlcTpjdWQiLCJzdXJyZXE6cmVhZCIsInRyYW5zcG9ydGNhbGw6Y3VkIiwidHJhbnNwb3J0Y2FsbDpyZWFkIiwidHJhbnNwb3J0ZG9jOmN1ZCIsInRyYW5zcG9ydGRvYzpyZWFkIiwidHM6Y3VkIiwidHM6cmVhZCIsInVzZXJzOmN1ZCIsInVzZXJzOnJlYWQiLCJ1dGU6Y3VkIiwidXRlOnJlYWQiLCJ2ZXNzZWxzY2hlZDpjdWQiLCJ2ZXNzZWxzY2hlZDpyZWFkIiwidm95YWdlOmN1ZCIsInZveWFnZTpyZWFkIl19.T3Gqb2s2GpNfilMzwZsLVYC1epEKNkZv0GSoZgsVg3X46lv7OxuHeNkVSMo7INPTC6DiWqZjXebRemN4q70u6b4laLJJsi8Z70xVqLcy1CAMUpvcFBZjwaLt3DQGUvmFiQoqL1GqMvNYbu0eGc0akqbV_AGLoi3n73GIAt_xT95ofBBdvOgjsueqz4oZ5Nlpwf9acu_XpadANvyYhZHNljS8UVj-3xQpmYzjJix_aLi1eSixKs8DhUkrLzzCX7kVXl3sKLQujgq3jQ7USkN3oIUAE5i0VuCYZNqaNAFFgQyTMoJBsTDL2bgS6wKiEC8mFap67QTIjNLs5g-_WoxjLw
-tokenClaims.CustomClaims &{[bkg:cud bkg:read bkgs:cud bkgs:read bkgss:cud bkgss:read charge:cud charge:read event:cud event:read eventsub:cud eventsub:read isr:cud isrr:cud isr:read isrr:read leg:cud leg:read parties:cud parties:read refer:cud refer:read seal:cud seal:read shipping:cud shippinginstr:cud shippinginstr:read shipping:read srv:cud srv:read srvsched:cud srvsched:read surreqans:cud surreqans:read surreq:cud surreq:read transportcall:cud transportcall:read transportdoc:cud transportdoc:read ts:cud ts:read users:cud users:read ute:cud ute:read vesselsched:cud vesselsched:read voyage:cud voyage:read] sprov300@gmail.com}
-email is sprov300@gmail.com
-v.Email sprov300@gmail.com
-
-
-
-
-
-
-
-
-
-========================================
-rani2@rani:~/go/src/github.com/prov100/dc1$ go run cmd/backend/backend.go
-config/config.go:GetViper() configFilePath /home/rani2/go/src/github.com/prov100/dc1/internal/config
-config/config.go:getLogWriter() file &{0xc000110600}
-config/config.go:getLogWriter() err <nil>
-config/config.go:SetUpLogging() writerSyncer is &{0xc000110600}
-config/config.go:SetUpLogging() encoder is {0xc000136740}
-config/config.go:SetUpLogging() core is &{debug {0xc000136740} 0xc000128260}
-config/config.go:SetUpLogging() log is &{0xc0003c2ae0 false false <nil> <nil>  0xc000134a50 -1 0 {}}
-2025-03-12T15:51:34.103+0530	INFO	common/wf_helper.go:115	Logger created.
-2025-03-12T15:51:34.103+0530	DEBUG	common/wf_factory.go:162	Creating RPC dispatcher outbound	{"ServiceName": "cadence-frontend", "HostPort": "127.0.0.1:7833"}
-2025-03-12T15:51:34.105+0530	INFO	common/wf_helper.go:168	Domain successfully registered.	{"Domain": "samples-domain"}
-server started &{:9061 0xc0003ea180 false <nil> 0s 0s 0s 0s 0 map[] <nil> <nil> <nil> <nil> <nil> <nil> {{} 0} {{} 0} {{} {{} 0} {{} {0 0}}} <nil> {{} {0 0}} map[] map[] [] {{} {{} {} 0} 0}}
-server started at port 9061
+2025/03/12 16:57:46 http: proxy error: EOF
 

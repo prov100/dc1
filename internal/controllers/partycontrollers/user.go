@@ -161,7 +161,7 @@ func (uc *UserController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }*/
 
 func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("GetUsers")
+	fmt.Println("UserController GetUsers")
 	/*data := common.GetAuthData(r)
 
 	cdata := partyproto.GetAuthUserDetailsRequest{}
@@ -173,6 +173,7 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	md := metadata.Pairs("authorization", "Bearer "+cdata.TokenString)
 
 	ctx := metadata.NewOutgoingContext(r.Context(), md)*/
+  fmt.Println("UserController GetUsers r is")
 	ctx, cdata := common.GetProtoMd(r)
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
 	if err != nil {

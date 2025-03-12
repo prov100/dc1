@@ -80,7 +80,9 @@ func GetAuthBearerToken(r *http.Request) (string, error) {
 
 // GetAuthData - used to get auth details
 func GetAuthData(r *http.Request) ContextStruct {
+  fmt.Println("common/auth.go GetAuthData")
 	data := r.Context().Value(KeyEmailToken).(ContextStruct)
+  fmt.Println("common/auth.go GetAuthData data", data)
 	return data
 }
 
@@ -126,14 +128,15 @@ func CreateCtxJWT(ctx context.Context) (context.Context, error) {
 
 // GetProtoMd - used to get auth details and context
 func GetProtoMd(r *http.Request) (context.Context, partyproto.GetAuthUserDetailsRequest) {
+  fmt.Println("common/auth.go GetProtoMd r", r)
 	data := GetAuthData(r)
-
+  fmt.Println("common/auth.go GetProtoMd data", data)
 	cdata := partyproto.GetAuthUserDetailsRequest{}
 	cdata.TokenString = data.TokenString
 	cdata.Email = data.Email
 	cdata.RequestUrlPath = r.URL.Path
 	cdata.RequestMethod = r.Method
-
+  fmt.Println("common/auth.go GetProtoMd cdata", cdata)
 	md := metadata.Pairs("authorization", "Bearer "+cdata.TokenString)
 
 	ctx := metadata.NewOutgoingContext(r.Context(), md)

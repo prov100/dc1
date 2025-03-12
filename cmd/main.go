@@ -150,7 +150,7 @@ func main() {
 	fmt.Println("main mux")
 
 	// Forward all /v1/users requests to the backend service
-	mux.Handle("/v0.1/users/", backendProxy)
+	mux.Handle("/v0.1/users", backendProxy)
 	fmt.Println("main mux1111111")
 
 	// Forward all /v1/parties requests to the backend service
