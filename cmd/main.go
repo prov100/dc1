@@ -107,7 +107,7 @@ func main() {
 			zap.Int("msgnum", 103),
 			zap.Error(err))
 		os.Exit(1)
-	}
+	}*/
 
 	jwtOpt, err := config.GetJWTConfig(log, v, false, "SC_DCSA_JWT_KEY", "SC_DCSA_JWT_DURATION")
 	if err != nil {
@@ -115,7 +115,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	redisOpt, _, _, grpcServerOpt, _, _, uptraceOpt := config.GetConfigOpt(log, v)
+	common.SetJWTOpt(jwtOpt)
+
+	/*redisOpt, _, _, grpcServerOpt, _, _, uptraceOpt := config.GetConfigOpt(log, v)
 
 	common.SetJWTOpt(jwtOpt)
 
