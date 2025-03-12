@@ -1,10 +1,17 @@
 package main
 
 import (
+	"context"
+	"crypto/tls"
+	"crypto/x509"
+	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"os/signal"
+	"path/filepath"
 
 	_ "github.com/go-sql-driver/mysql" // mysql
 	"github.com/prov100/dc1/internal/common"
@@ -15,7 +22,7 @@ import (
 /*** APIG start ***/
 // API Gateway configuration
 const (
-	BackendServiceURL = "http://localhost:8081" // Backend service URL
+	BackendServiceURL = "http://localhost:9061" // Backend service URL
 )
 
 // ReverseProxy creates a reverse proxy to the backend service
@@ -26,7 +33,7 @@ func ReverseProxy(target string) http.Handler {
 
 /*** APIG end ***/
 
-/*func getKeys(log *zap.Logger, caCertPath string, certPath string, keyPath string) *tls.Config {
+func getKeys(log *zap.Logger, caCertPath string, certPath string, keyPath string) *tls.Config {
 	caCert, err := os.ReadFile(caCertPath)
 	if err != nil {
 		log.Error("Error",
@@ -52,7 +59,7 @@ func ReverseProxy(target string) http.Handler {
 	}
 
 	return &tlsConfig
-}*/
+}
 
 func main() {
 	v, err := config.GetViper()
@@ -155,7 +162,7 @@ func main() {
 			zap.Int("msgnum", 110),
 			zap.Error(err))
 		os.Exit(1)
-	}
+	}*/
 
 	if serverOpt.ServerTLS == "true" {
 		var caCertPath, certPath, keyPath string
@@ -241,5 +248,5 @@ func main() {
 
 		<-idleConnsClosed
 
-	}*/
+	}
 }
