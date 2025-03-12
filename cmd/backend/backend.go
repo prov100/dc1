@@ -15,9 +15,7 @@ import (
 	"github.com/prov100/dc1/internal/common"
 	"github.com/prov100/dc1/internal/config"
 	"github.com/prov100/dc1/internal/controllers/partycontrollers"
-	"github.com/rs/cors"
 	"github.com/throttled/throttled/v2/store/goredisstore"
-	"github.com/unrolled/secure"
 	"go.uber.org/zap"
 )
 
@@ -70,8 +68,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	auth0Config := common.Auth0Config{
-		Port:          serverOpt.ApigServerAddr, // port,
+	/*auth0Config := common.Auth0Config{
+		Port:          serverOpt.BackendServerAddr, // port,
 		SecureOptions: config.SecureOptions(),
 		CorsOptions:   config.CorsOptions(serverOpt.ClientOriginUrl),
 		Audience:      serverOpt.Auth0Audience, // audience,
@@ -79,9 +77,9 @@ func main() {
 	}
 
 	fmt.Println("main: serverOpt.Auth0Audience", serverOpt.Auth0Audience)
-	fmt.Println("main: serverOpt.Auth0Domain", serverOpt.Auth0Domain)
+	fmt.Println("main: serverOpt.Auth0Domain", serverOpt.Auth0Domain)*/
 
-	router := http.NewServeMux()
+	/*router := http.NewServeMux()
 	newRouter := common.Router(router)
 	corsMiddleware := cors.New(auth0Config.CorsOptions)
 	routerWithCORS := corsMiddleware.Handler(newRouter)
@@ -102,7 +100,7 @@ func main() {
 		log.Error("Error", zap.Int("msgnum", 103), zap.Error(err))
 		os.Exit(1)
 	}
-
+	*/
 	redisOpt, _, _, grpcServerOpt, _, _, uptraceOpt := config.GetConfigOpt(log, v)
 
 	redisService, err := common.CreateRedisService(log, redisOpt)
@@ -121,7 +119,7 @@ func main() {
 
 	// mux := http.NewServeMux()
 	configFilePath := v.GetString("SC_DCSA_WORKFLOW_CONFIG_FILE_PATH")
-	err = partycontrollers.Init(log, rateOpt, jwtOpt, router, store, serverOpt, grpcServerOpt, uptraceOpt, configFilePath)
+	err = partycontrollers.Init(log, router, store, serverOpt, grpcServerOpt, uptraceOpt, configFilePath)
 	if err != nil {
 		log.Error("Error",
 			zap.Int("msgnum", 110),
@@ -139,9 +137,9 @@ func main() {
 
 		tlsConfig = getKeys(log, caCertPath, certPath, keyPath)
 
-		fmt.Println("main:serverOpt.ApigServerAddr", serverOpt.ApigServerAddr)
+		fmt.Println("main:serverOpt.BackendServerAddr", serverOpt.BackendServerAddr)
 		srv := &http.Server{
-			Addr:      ":" + serverOpt.ApigServerAddr,
+			Addr:      ":" + serverOpt.BackendServerAddr,
 			Handler:   finalHandler, // mux,
 			TLSConfig: tlsConfig,
 		}
@@ -179,7 +177,7 @@ func main() {
 	} else {
 
 		srv := &http.Server{
-			Addr:    ":" + serverOpt.ApigServerAddr,
+			Addr:    ":" + serverOpt.BackendServerAddr,
 			Handler: finalHandler, // mux,
 		}
 		fmt.Println("server started", srv)
@@ -199,7 +197,7 @@ func main() {
 			close(idleConnsClosed)
 		}()
 
-		fmt.Println("server started at port", serverOpt.ApigServerAddr)
+		fmt.Println("server started at port", serverOpt.BackendServerAddr)
 		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
 			// Error starting or closing listener:
 			log.Error("Error",

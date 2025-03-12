@@ -68,11 +68,11 @@ func TestMain(m *testing.M) {
 		return
 	}*/
 
-	rateOpt, err := config.GetRateConfig(log, v)
+	/*rateOpt, err := config.GetRateConfig(log, v)
 	if err != nil {
 		log.Error("Error", zap.Int("msgnum", 8301), zap.Error(err))
 		os.Exit(1)
-	}
+	}*/
 
 	userTestOpt, err = config.GetUserTestConfig(log, v)
 	if err != nil {
@@ -105,7 +105,7 @@ func TestMain(m *testing.M) {
 	}
 	// userServiceClient = partyproto.NewUserServiceClient(userconn)
 	mux = http.NewServeMux()
-	err = InitTest(log, rateOpt, jwtOpt, mux, store, serverOpt, grpcServerOpt, uptraceOpt, configFilePath)
+	err = InitTest(log, mux, store, serverOpt, grpcServerOpt, uptraceOpt, configFilePath)
 	if err != nil {
 		log.Error("Error", zap.Int("msgnum", 8602), zap.Error(err))
 		return
