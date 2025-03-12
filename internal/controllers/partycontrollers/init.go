@@ -28,7 +28,7 @@ var (
 
 // Init the party controllers
 func Init(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOptions, mux *http.ServeMux, store *goredisstore.GoRedisStore, serverOpt *config.ServerOptions, grpcServerOpt *config.GrpcServerOptions, uptraceOpt *config.UptraceOptions, configFilePath string) error {
-  pwd, _ := os.Getwd()
+	pwd, _ := os.Getwd()
 	keyPath := pwd + filepath.FromSlash(grpcServerOpt.GrpcCaCertPath)
 
 	u, p, h, workflowClient, err := initSetup(log, keyPath, configFilePath, serverOpt, grpcServerOpt)
@@ -47,7 +47,7 @@ func Init(log *zap.Logger, rateOpt *config.RateOptions, jwtOpt *config.JWTOption
 		panic(err)
 	}
 
-	
+
 	creds, err := credentials.NewClientTLSFromFile(keyPath, "localhost")
 	if err != nil {
 		log.Error("Error", zap.Int("msgnum", 110), zap.Error(err))
@@ -173,7 +173,7 @@ func initSetup(log *zap.Logger, keyPath string, configFilePath string, serverOpt
 }
 
 func initParties(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Logger, u partyproto.UserServiceClient, p partyproto.PartyServiceClient, wfHelper common.WfHelper, workflowClient client.Client) {
-	pp := NewPartyController(log, p, u)
+	/*pp := NewPartyController(log, p, u)
 
 	mChainCud := common.ChainMiddlewares(
 		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
@@ -187,7 +187,7 @@ func initParties(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.L
 
 	mux.Handle("GET /v0.1/parties", mChainRead(http.HandlerFunc(pp.GetParties)))
 
-	mux.Handle("POST /v0.1/parties/{id}", mChainCud(http.HandlerFunc(pp.CreateParty)))
+	mux.Handle("POST /v0.1/parties/{id}", mChainCud(http.HandlerFunc(pp.CreateParty)))*/
 }
 
 func initUsers(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Logger, u partyproto.UserServiceClient, wfHelper common.WfHelper, workflowClient client.Client) {

@@ -1,32 +1,27 @@
 package main
 
 import (
+	"context"
+	"crypto/tls"
+	"crypto/x509"
+	"errors"
+	"fmt"
 	"net/http"
-	"net/http/httputil"
-	"net/url"
 	"os"
+	"os/signal"
+	"path/filepath"
 
 	_ "github.com/go-sql-driver/mysql" // mysql
 	"github.com/prov100/dc1/internal/common"
 	"github.com/prov100/dc1/internal/config"
+	"github.com/prov100/dc1/internal/controllers/partycontrollers"
+	"github.com/rs/cors"
+	"github.com/throttled/throttled/v2/store/goredisstore"
+	"github.com/unrolled/secure"
 	"go.uber.org/zap"
 )
 
-/*** APIG start ***/
-// API Gateway configuration
-const (
-	BackendServiceURL = "http://localhost:8081" // Backend service URL
-)
-
-// ReverseProxy creates a reverse proxy to the backend service
-func ReverseProxy(target string) http.Handler {
-	targetURL, _ := url.Parse(target)
-	return httputil.NewSingleHostReverseProxy(targetURL)
-}
-
-/*** APIG end ***/
-
-/*func getKeys(log *zap.Logger, caCertPath string, certPath string, keyPath string) *tls.Config {
+func getKeys(log *zap.Logger, caCertPath string, certPath string, keyPath string) *tls.Config {
 	caCert, err := os.ReadFile(caCertPath)
 	if err != nil {
 		log.Error("Error",
@@ -52,7 +47,7 @@ func ReverseProxy(target string) http.Handler {
 	}
 
 	return &tlsConfig
-}*/
+}
 
 func main() {
 	v, err := config.GetViper()
@@ -75,7 +70,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	/*auth0Config := common.Auth0Config{
+	auth0Config := common.Auth0Config{
 		Port:          serverOpt.ServerAddr, // port,
 		SecureOptions: config.SecureOptions(),
 		CorsOptions:   config.CorsOptions(serverOpt.ClientOriginUrl),
@@ -110,8 +105,6 @@ func main() {
 
 	redisOpt, _, _, grpcServerOpt, _, _, uptraceOpt := config.GetConfigOpt(log, v)
 
-	common.SetJWTOpt(jwtOpt)
-
 	redisService, err := common.CreateRedisService(log, redisOpt)
 	if err != nil {
 		log.Error("Error", zap.Int("msgnum", 750), zap.Error(err))
@@ -124,31 +117,10 @@ func main() {
 			zap.Int("msgnum", 754),
 			zap.Error(err))
 		os.Exit(1)
-	}*/
-
-	/*** APIG start ***/
-
-	// Create a reverse proxy to the backend service
-	backendProxy := ReverseProxy(BackendServiceURL)
-
-	// Set up the API Gateway routes
-	mux := http.NewServeMux()
-
-	// Forward all /v1/users requests to the backend service
-	mux.Handle("/v0.1/users/", backendProxy)
-
-	// Forward all /v1/parties requests to the backend service
-	mux.Handle("/v0.1/parties/", backendProxy)
-
-	/*** APIG end ***/
-
-	// Chain middlewares
-	handler := common.ChainMiddlewares(
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
-	)(mux)
+	}
 
 	// mux := http.NewServeMux()
-	/*configFilePath := v.GetString("SC_DCSA_WORKFLOW_CONFIG_FILE_PATH")
+	configFilePath := v.GetString("SC_DCSA_WORKFLOW_CONFIG_FILE_PATH")
 	err = partycontrollers.Init(log, rateOpt, jwtOpt, router, store, serverOpt, grpcServerOpt, uptraceOpt, configFilePath)
 	if err != nil {
 		log.Error("Error",
@@ -241,5 +213,5 @@ func main() {
 
 		<-idleConnsClosed
 
-	}*/
+	}
 }
