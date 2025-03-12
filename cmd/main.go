@@ -16,8 +16,6 @@ import (
 	_ "github.com/go-sql-driver/mysql" // mysql
 	"github.com/prov100/dc1/internal/common"
 	"github.com/prov100/dc1/internal/config"
-	"github.com/rs/cors"
-	"github.com/unrolled/secure"
 	"go.uber.org/zap"
 )
 
@@ -84,7 +82,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	auth0Config := common.Auth0Config{
+	/*auth0Config := common.Auth0Config{
 		Port:          serverOpt.ApigServerAddr, // port,
 		SecureOptions: config.SecureOptions(),
 		CorsOptions:   config.CorsOptions(serverOpt.ClientOriginUrl),
@@ -93,7 +91,7 @@ func main() {
 	}
 
 	fmt.Println("main: serverOpt.Auth0Audience", serverOpt.Auth0Audience)
-	fmt.Println("main: serverOpt.Auth0Domain", serverOpt.Auth0Domain)
+	fmt.Println("main: serverOpt.Auth0Domain", serverOpt.Auth0Domain)*/
 
 	/*router := http.NewServeMux()
 	newRouter := common.Router(router)
@@ -152,9 +150,9 @@ func main() {
 	/*** APIG end ***/
 
 	// Chain middlewares
-	handler := common.ChainMiddlewares(
-		cors.New(auth0Config.CorsOptions),
-		secure.New(auth0Config.SecureOptions),
+	finalHandler := common.ChainMiddlewares(
+		// cors.New(auth0Config.CorsOptions),
+		// secure.New(auth0Config.SecureOptions),
 		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)(mux)
 
