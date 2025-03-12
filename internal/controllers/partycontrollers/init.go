@@ -193,7 +193,7 @@ func initParties(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.L
 func initUsers(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Logger, u partyproto.UserServiceClient, wfHelper common.WfHelper, workflowClient client.Client) {
 	usc := NewUserController(log, u, h, workflowClient)
 	// Chain middlewares
-	mChainCud := common.ChainMiddlewares(
+	/*mChainCud := common.ChainMiddlewares(
 		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 		common.ValidatePermissions([]string{"users:cud"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)
@@ -201,9 +201,11 @@ func initUsers(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Log
 	mChainRead := common.ChainMiddlewares(
 		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 		common.ValidatePermissions([]string{"users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
-	)
+	)*/
 
-	mux.Handle("GET /v0.1/users", mChainRead(http.HandlerFunc(usc.GetUsers)))
+	mux.Handle("GET /v0.1/users", http.HandlerFunc(usc.GetUsers))
+
+	/*mux.Handle("GET /v0.1/users", mChainRead(http.HandlerFunc(usc.GetUsers)))
 
 	mux.Handle("GET /v0.1/users/{id}", mChainRead(http.HandlerFunc(usc.GetUser)))
 
@@ -213,5 +215,5 @@ func initUsers(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Log
 
 	mux.Handle("PUT /v0.1/users/{id}", mChainCud(http.HandlerFunc(usc.UpdateUser)))
 
-	mux.Handle("DELETE /v0.1/users/{id}", mChainCud(http.HandlerFunc(usc.DeleteUser)))
+	mux.Handle("DELETE /v0.1/users/{id}", mChainCud(http.HandlerFunc(usc.DeleteUser)))*/
 }

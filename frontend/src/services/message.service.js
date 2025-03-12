@@ -56,8 +56,9 @@ export const getAdminResource = async (accessToken) => {
 };
 
 export const getPartyResource = async (accessToken) => {
+  alert(accessToken);
   const config = {
-    url: `${apiServerUrl}/v0.1/parties`,
+    url: `${apiServerUrl}/v0.1/users`,
     method: "GET",
     headers: {
       "content-type": "application/json",

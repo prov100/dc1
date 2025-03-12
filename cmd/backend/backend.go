@@ -117,9 +117,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	// mux := http.NewServeMux()
+	mux := http.NewServeMux()
 	configFilePath := v.GetString("SC_DCSA_WORKFLOW_CONFIG_FILE_PATH")
-	err = partycontrollers.Init(log, router, store, serverOpt, grpcServerOpt, uptraceOpt, configFilePath)
+	err = partycontrollers.Init(log, mux, store, serverOpt, grpcServerOpt, uptraceOpt, configFilePath)
 	if err != nil {
 		log.Error("Error",
 			zap.Int("msgnum", 110),
@@ -140,7 +140,7 @@ func main() {
 		fmt.Println("main:serverOpt.BackendServerAddr", serverOpt.BackendServerAddr)
 		srv := &http.Server{
 			Addr:      ":" + serverOpt.BackendServerAddr,
-			Handler:   finalHandler, // mux,
+			Handler:   mux, // mux,
 			TLSConfig: tlsConfig,
 		}
 
@@ -178,7 +178,7 @@ func main() {
 
 		srv := &http.Server{
 			Addr:    ":" + serverOpt.BackendServerAddr,
-			Handler: finalHandler, // mux,
+			Handler: mux, // mux,
 		}
 		fmt.Println("server started", srv)
 		idleConnsClosed := make(chan struct{})

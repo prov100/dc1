@@ -27,7 +27,10 @@ const (
 
 // ReverseProxy creates a reverse proxy to the backend service
 func ReverseProxy(target string) http.Handler {
+  fmt.Println("ReverseProxy started")
+  fmt.Println("ReverseProxy target", target)
 	targetURL, _ := url.Parse(target)
+  fmt.Println("ReverseProxy targetURL", targetURL)
 	return httputil.NewSingleHostReverseProxy(targetURL)
 }
 
@@ -62,6 +65,7 @@ func getKeys(log *zap.Logger, caCertPath string, certPath string, keyPath string
 }
 
 func main() {
+	fmt.Println("main started")
 	v, err := config.GetViper()
 	if err != nil {
 		os.Exit(1)
@@ -138,14 +142,20 @@ func main() {
 	// Create a reverse proxy to the backend service
 	backendProxy := ReverseProxy(BackendServiceURL)
 
+	fmt.Println("main backendProxy", backendProxy)
+
 	// Set up the API Gateway routes
 	mux := http.NewServeMux()
 
+	fmt.Println("main mux")
+
 	// Forward all /v1/users requests to the backend service
 	mux.Handle("/v0.1/users/", backendProxy)
+	fmt.Println("main mux1111111")
 
 	// Forward all /v1/parties requests to the backend service
 	mux.Handle("/v0.1/parties/", backendProxy)
+	fmt.Println("main mux2222222222")
 
 	/*** APIG end ***/
 
@@ -153,9 +163,12 @@ func main() {
 	finalHandler := common.ChainMiddlewares(
 		// cors.New(auth0Config.CorsOptions),
 		// secure.New(auth0Config.SecureOptions),
+		common.HandleCacheControl,
+		common.CorsMiddleware,
 		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)(mux)
 
+	fmt.Println("main mux333333333333333")
 	// mux := http.NewServeMux()
 	/*configFilePath := v.GetString("SC_DCSA_WORKFLOW_CONFIG_FILE_PATH")
 	err = partycontrollers.Init(log, rateOpt, jwtOpt, router, store, serverOpt, grpcServerOpt, uptraceOpt, configFilePath)
@@ -167,6 +180,7 @@ func main() {
 	}*/
 
 	if serverOpt.ServerTLS == "true" {
+		fmt.Println("main mux4444444444444 ServerTLS true")
 		var caCertPath, certPath, keyPath string
 		var tlsConfig *tls.Config
 		pwd, _ := os.Getwd()
@@ -199,7 +213,7 @@ func main() {
 			close(idleConnsClosed)
 		}()
 
-		fmt.Println("main:Starting server in TLS mode")
+		fmt.Println("main:Starting server in TLS true")
 		if err := srv.ListenAndServeTLS(certPath, keyPath); err != http.ErrServerClosed {
 			fmt.Println("err", err)
 			// Error starting or closing listener:
@@ -214,7 +228,7 @@ func main() {
 
 		<-idleConnsClosed
 	} else {
-
+		fmt.Println("main mux4444444444444 ServerTLS false")
 		srv := &http.Server{
 			Addr:    ":" + serverOpt.ApigServerAddr,
 			Handler: finalHandler, // mux,

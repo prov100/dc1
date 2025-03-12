@@ -14,7 +14,7 @@ import (
 	"github.com/auth0/go-jwt-middleware/v2/validator"
 )
 
-func Router(router *http.ServeMux) http.Handler {
+/*func Router(router *http.ServeMux) http.Handler {
 	fmt.Println("common./middleware.go Router() started")
 	fmt.Println("common./middleware.go Router() started router is", router)
 	return HandleCacheControl(router)
@@ -29,6 +29,42 @@ func HandleCacheControl(next *http.ServeMux) http.Handler {
 		headers.Set("Pragma", "no-cache")
 		headers.Set("Expires", "0")
 		next.ServeHTTP(rw, req)
+	})
+}*/
+
+func HandleCacheControl(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Set cache-control headers
+		headers := w.Header()
+		headers.Set("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate")
+		headers.Set("Pragma", "no-cache")
+		headers.Set("Expires", "0")
+
+		// Call the next handler
+		next.ServeHTTP(w, r)
+	})
+}
+
+func CorsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Set CORS headers
+		if origin := r.Header.Get("Origin"); origin != "" {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+			w.Header().Set("Access-Control-Allow-Headers",
+				"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Access-Control-Allow-Origin")
+		}
+
+		// Handle preflight OPTIONS requests
+		if r.Method == "OPTIONS" {
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.Header().Set("Access-Control-Expose-Headers", "Authorization")
+			w.Header().Set("Access-Control-Max-Age", "86400")
+			return
+		}
+
+		// Call the next handler
+		next.ServeHTTP(w, r)
 	})
 }
 
