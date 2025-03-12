@@ -119,8 +119,6 @@ func main() {
 
 	/*redisOpt, _, _, grpcServerOpt, _, _, uptraceOpt := config.GetConfigOpt(log, v)
 
-	common.SetJWTOpt(jwtOpt)
-
 	redisService, err := common.CreateRedisService(log, redisOpt)
 	if err != nil {
 		log.Error("Error", zap.Int("msgnum", 750), zap.Error(err))
