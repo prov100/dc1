@@ -93,7 +93,7 @@ func Init(log *zap.Logger, mux *http.ServeMux, store *goredisstore.GoRedisStore,
 	)
 
 	// This route is only accessible if the user has a valid access_token.
-	mux.Handle("/api/messages/protected", common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain)(
+	mux.Handle("/api/messages/protected", common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain)(
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("in /api/messages/protected r", r)
 			fmt.Println("in /api/messages/protected")
@@ -102,14 +102,14 @@ func Init(log *zap.Logger, mux *http.ServeMux, store *goredisstore.GoRedisStore,
 		}),
 	))
 
-	// mux.Handle("/v0.1/parties", common.AddMiddleware(pp, common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+	// mux.Handle("/v0.1/parties", common.AddMiddleware(pp, common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
 
-	mux.Handle("/v0.1/parties", common.AddMiddleware(hrlParty.RateLimit(pp), common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"parties:cud", "parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+	mux.Handle("/v0.1/parties", common.AddMiddleware(hrlParty.RateLimit(pp), common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"parties:cud", "parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
 
-	// mux.Handle("/v0.1/parties", common.AddMiddleware(pp, common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"read:admin-messages"}))
+	// mux.Handle("/v0.1/parties", common.AddMiddleware(pp, common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"read:admin-messages"}))
 
-	// mux.Handle("/v0.1/parties/", common.AddMiddleware(pp, common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
-	mux.Handle("/v0.1/parties/", common.AddMiddleware(hrlParty.RateLimit(pp), common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"parties:cud", "parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
+	// mux.Handle("/v0.1/parties/", common.AddMiddleware(pp, common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
+	mux.Handle("/v0.1/parties/", common.AddMiddleware(hrlParty.RateLimit(pp), common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"parties:cud", "parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
 
 	return nil
 }
@@ -176,12 +176,12 @@ func initParties(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.L
 	/*pp := NewPartyController(log, p, u)
 
 	mChainCud := common.ChainMiddlewares(
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 		common.ValidatePermissions([]string{"parties:cud"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)
 
 	mChainRead := common.ChainMiddlewares(
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 		common.ValidatePermissions([]string{"parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)
 
@@ -194,12 +194,12 @@ func initUsers(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Log
 	usc := NewUserController(log, u, h, workflowClient)
 	// Chain middlewares
 	/*mChainCud := common.ChainMiddlewares(
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 		common.ValidatePermissions([]string{"users:cud"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)
 
 	mChainRead := common.ChainMiddlewares(
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 		common.ValidatePermissions([]string{"users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)*/
 

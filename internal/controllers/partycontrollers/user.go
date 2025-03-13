@@ -161,7 +161,7 @@ func (uc *UserController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }*/
 
 func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("UserController GetUsers")
+	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers")
 	/*data := common.GetAuthData(r)
 
 	cdata := partyproto.GetAuthUserDetailsRequest{}
@@ -173,20 +173,23 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	md := metadata.Pairs("authorization", "Bearer "+cdata.TokenString)
 
 	ctx := metadata.NewOutgoingContext(r.Context(), md)*/
-	fmt.Println("UserController GetUsers r is")
+	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r is", r)
+	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers call common.GetProtoMd started")
 	ctx, cdata := common.GetProtoMd(r)
+	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers call common.GetProtoMd ended")
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
 	if err != nil {
 		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
 		return
 	}
-	fmt.Println("user", user)
+	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers user", user)
 	users, err := uc.UserServiceClient.GetUsers(ctx, &partyproto.GetUsersRequest{UserEmail: user.Email, RequestId: user.RequestId})
 	if err != nil {
 		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
 		common.RenderErrorJSON(w, "1301", err.Error(), 402, user.RequestId)
 		return
 	}
+	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers users", users)
 	common.RenderJSON(w, users)
 	// common.RenderJSON(w, "users are")
 }

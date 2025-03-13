@@ -174,7 +174,7 @@ func main() {
 		// secure.New(auth0Config.SecureOptions),
 		common.HandleCacheControl,
 		common.CorsMiddleware,
-		common.EnsureValidToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)(mux)
 
 	fmt.Println("main mux333333333333333")
