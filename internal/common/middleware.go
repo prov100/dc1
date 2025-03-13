@@ -2,8 +2,10 @@ package common
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 /*func Router(router *http.ServeMux) http.Handler {
@@ -114,35 +116,47 @@ func Contains(s []string, e string) bool {
 	return false
 }
 
-func ValidatePermissions(expectedClaims []string, audience string, domain string) func(next http.Handler) http.Handler {
-	fmt.Println("internal/common/middleware.go ValidatePermissions1111")
+func ValidateToken(audience string, domain string) func(http.Handler) http.Handler {
+	fmt.Println("internal/common/middleware.go ValidateToken1111")
 	return func(next http.Handler) http.Handler {
+		fmt.Println("internal/common/middleware.go ValidateToken2222")
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Println("r is", r)
+			fmt.Println("internal/common/middleware.go ValidateToken3333")
+			fmt.Println("internal/common/middleware.go audience is", audience)
+			fmt.Println("internal/common/middleware.go domain is", domain)
+
 			tokenString, err := getToken(r)
 			if err != nil {
 				http.Error(w, "Error parsing token", http.StatusUnauthorized)
 				return
 			}
-			_, claims, err := getClaims(audience, domain, tokenString, w, r)
+			middleware, claims, err := getClaims(audience, domain, tokenString, w, r)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnauthorized)
 				return
 			}
+			v := ContextStruct{}
 
-			fmt.Println("claims", claims)
-			fmt.Println("claims.Permissions", claims.Permissions)
-			if len(claims.Permissions) == 0 {
-				fmt.Println("in len(claims.Permissions) err is permission denied")
-				RenderJSON(w, "Permission Denied")
-				return
-			}
-			fmt.Println("ValidatePermissions111111")
-			if !claims.HasPermissions(expectedClaims) {
-				RenderJSON(w, "Permission Denied")
-				return
-			}
-			fmt.Println("ValidatePermissions end")
-			next.ServeHTTP(w, r)
+			v.Email = claims.Email
+			v.TokenString = tokenString
+
+			fmt.Println("v.Email", v.Email)
+
+			ctx := context.WithValue(r.Context(), KeyEmailToken, v)
+
+			// middleware.CheckJWT(next).ServeHTTP(w, r)
+			middleware.CheckJWT(next).ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
+}
+
+func getToken(r *http.Request) (string, error) {
+	authHeaderParts := strings.Fields(r.Header.Get("Authorization"))
+	fmt.Println("internal/common/middleware.go authHeaderParts", authHeaderParts)
+	fmt.Println("internal/common/middleware.go authHeaderParts[1]", authHeaderParts[1])
+	if len(authHeaderParts) > 0 && strings.ToLower(authHeaderParts[0]) != "bearer" {
+		return "", errors.New("Error parsing token")
+	}
+	return authHeaderParts[1], nil
 }

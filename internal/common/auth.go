@@ -153,49 +153,37 @@ func GetProtoMd(r *http.Request) (context.Context, partyproto.GetAuthUserDetails
 	return ctx, cdata
 }
 
-func ValidateToken(audience string, domain string) func(http.Handler) http.Handler {
-	fmt.Println("internal/common/middleware.go ValidateToken1111")
+func ValidatePermissions(expectedClaims []string, audience string, domain string) func(next http.Handler) http.Handler {
+	fmt.Println("internal/common/auth.go ValidatePermissions1111")
 	return func(next http.Handler) http.Handler {
-		fmt.Println("internal/common/middleware.go ValidateToken2222")
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			fmt.Println("r is", r)
-			fmt.Println("internal/common/middleware.go ValidateToken3333")
-			fmt.Println("internal/common/middleware.go audience is", audience)
-			fmt.Println("internal/common/middleware.go domain is", domain)
-
 			tokenString, err := getToken(r)
 			if err != nil {
 				http.Error(w, "Error parsing token", http.StatusUnauthorized)
 				return
 			}
-			middleware, claims, err := getClaims(audience, domain, tokenString, w, r)
+			_, claims, err := getClaims(audience, domain, tokenString, w, r)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnauthorized)
 				return
 			}
-			v := ContextStruct{}
 
-			v.Email = claims.Email
-			v.TokenString = tokenString
-
-			fmt.Println("v.Email", v.Email)
-
-			ctx := context.WithValue(r.Context(), KeyEmailToken, v)
-
-			// middleware.CheckJWT(next).ServeHTTP(w, r)
-			middleware.CheckJWT(next).ServeHTTP(w, r.WithContext(ctx))
+			fmt.Println("claims", claims)
+			fmt.Println("claims.Permissions", claims.Permissions)
+			if len(claims.Permissions) == 0 {
+				fmt.Println("in len(claims.Permissions) err is permission denied")
+				RenderJSON(w, "Permission Denied")
+				return
+			}
+			fmt.Println("ValidatePermissions111111")
+			if !claims.HasPermissions(expectedClaims) {
+				RenderJSON(w, "Permission Denied")
+				return
+			}
+			fmt.Println("ValidatePermissions end")
+			next.ServeHTTP(w, r)
 		})
 	}
-}
-
-func getToken(r *http.Request) (string, error) {
-	authHeaderParts := strings.Fields(r.Header.Get("Authorization"))
-	fmt.Println("internal/common/middleware.go authHeaderParts", authHeaderParts)
-	fmt.Println("internal/common/middleware.go authHeaderParts[1]", authHeaderParts[1])
-	if len(authHeaderParts) > 0 && strings.ToLower(authHeaderParts[0]) != "bearer" {
-		return "", errors.New("Error parsing token")
-	}
-	return authHeaderParts[1], nil
 }
 
 func getClaims(audience string, domain string, tokenString string, w http.ResponseWriter, r *http.Request) (*jwtmiddleware.JWTMiddleware, *CustomClaims, error) {
@@ -203,7 +191,7 @@ func getClaims(audience string, domain string, tokenString string, w http.Respon
 	if err != nil {
 		return nil, nil, errors.New("Failed to parse the issuer url")
 	}
-	fmt.Println("internal/common/middleware.go issuerURL is", issuerURL)
+	fmt.Println("internal/common/auth.go issuerURL is", issuerURL)
 
 	provider := jwks.NewCachingProvider(issuerURL, 5*time.Minute)
 	// audience := "https://hello-world.example.com"
@@ -220,7 +208,7 @@ func getClaims(audience string, domain string, tokenString string, w http.Respon
 		fmt.Println("Failed to set up the jwt validator")
 		return nil, nil, errors.New("Failed to set up the jwt validator")
 	}
-	fmt.Println("internal/common/middleware.go ValidateToken4444444444")
+	fmt.Println("internal/common/auth.go ValidateToken4444444444")
 
 	errorHandler := func(w http.ResponseWriter, r *http.Request, err error) {
 		fmt.Println("Encountered error while validating JWT", err)
@@ -238,8 +226,8 @@ func getClaims(audience string, domain string, tokenString string, w http.Respon
 		jwtValidator.ValidateToken,
 		jwtmiddleware.WithErrorHandler(errorHandler),
 	)
-	fmt.Println("internal/common/middleware.go ValidateToken middleware", middleware)
-	fmt.Println("internal/common/middleware.go tokenString", tokenString)
+	fmt.Println("internal/common/auth.go ValidateToken middleware", middleware)
+	fmt.Println("internal/common/auth.go tokenString", tokenString)
 
 	tokenClaims, err := jwtValidator.ValidateToken(r.Context(), tokenString)
 	if err != nil {
