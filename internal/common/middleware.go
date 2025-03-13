@@ -41,6 +41,7 @@ func HandleCacheControl(next http.Handler) http.Handler {
 
 func CorsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// fmt.Println("in CorsMiddleware11111111111")
 		// Set CORS headers
 		if origin := r.Header.Get("Origin"); origin != "" {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
@@ -56,7 +57,8 @@ func CorsMiddleware(next http.Handler) http.Handler {
 			w.Header().Set("Access-Control-Max-Age", "86400")
 			return
 		}
-
+		// fmt.Println("in CorsMiddleware222222222222")
+		// fmt.Println("in CorsMiddleware222222222222 r.Context()", r.Context())
 		// Call the next handler
 		next.ServeHTTP(w, r)
 	})

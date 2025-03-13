@@ -29,9 +29,30 @@ const (
 func ReverseProxy(target string) http.Handler {
 	fmt.Println("ReverseProxy started")
 	fmt.Println("ReverseProxy target", target)
-	targetURL, _ := url.Parse(target)
+	/*targetURL, _ := url.Parse(target)
 	fmt.Println("ReverseProxy targetURL", targetURL)
-	return httputil.NewSingleHostReverseProxy(targetURL)
+	return httputil.NewSingleHostReverseProxy(targetURL)*/
+
+	targetURL, _ := url.Parse(target)
+	proxy := httputil.NewSingleHostReverseProxy(targetURL)
+	// Modify the request to include the context
+	proxy.Director = func(req *http.Request) {
+		req.URL.Scheme = targetURL.Scheme
+		req.URL.Host = targetURL.Host
+		req.URL.Path = targetURL.Path + req.URL.Path
+
+		// Forward the context to the backend service
+		if ctx := req.Context().Value(common.KeyEmailToken); ctx != nil {
+			if emailToken, ok := ctx.(common.ContextStruct); ok {
+				fmt.Println("ReverseProxy emailToken", emailToken)
+				// Create a new context with the email and token
+				newCtx := context.WithValue(req.Context(), common.KeyEmailToken, emailToken)
+				*req = *req.WithContext(newCtx)
+			}
+		}
+	}
+
+	return proxy
 }
 
 /*** APIG end ***/

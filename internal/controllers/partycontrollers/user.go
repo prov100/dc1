@@ -162,6 +162,16 @@ func (uc *UserController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers")
+	x := r.Context().Value(common.KeyEmailToken)
+	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers x", x)
+	if ctx := r.Context().Value(common.KeyEmailToken); ctx != nil {
+		fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers11111111111")
+		if emailToken, ok := ctx.(common.ContextStruct); ok {
+			fmt.Printf("User Email: %s", emailToken.Email)
+			fmt.Printf("Token: %s", emailToken.TokenString)
+		}
+	}
+
 	/*data := common.GetAuthData(r)
 
 	cdata := partyproto.GetAuthUserDetailsRequest{}
