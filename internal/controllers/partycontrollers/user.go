@@ -35,133 +35,10 @@ func NewUserController(log *zap.Logger, s partyproto.UserServiceClient, wfHelper
 	}
 }
 
-// ServeHTTP - parse url and call controller action
-func (uc *UserController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	/*fmt.Println("in ServeHTTP")
-	data := common.GetAuthData(r)
-
-	cdata := partyproto.GetAuthUserDetailsRequest{}
-	cdata.TokenString = data.TokenString
-	cdata.Email = data.Email
-	cdata.RequestUrlPath = r.URL.Path
-	cdata.RequestMethod = r.Method
-
-	md := metadata.Pairs("authorization", "Bearer "+cdata.TokenString)
-
-	ctx := metadata.NewOutgoingContext(r.Context(), md)
-	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
-	if err != nil {
-		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
-		return
-	}
-	pathParts, queryString, err := common.ParseURL(r.URL.String())
-	if err != nil {
-		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
-		return
-	}*/
-	/*switch r.Method {
-	case http.MethodGet:
-		uc.processGet(ctx, w, r, user, pathParts, queryString)
-	case http.MethodPost:
-		uc.processPost(ctx, w, r, user, pathParts)
-	case http.MethodPut:
-		uc.processPut(ctx, w, r, user, pathParts, data.TokenString)
-	case http.MethodDelete:
-		uc.processDelete(ctx, w, r, user, pathParts, data.TokenString)
-	default:
-		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
-		return
-	}*/
-}
-
-// processGet - Parse URL for all the GET paths and call the controller action
-/*
-	GET  "/v1/users/"
-	GET  "/v1/users/{id}"
-*/
-
-/*func (uc *UserController) processGet(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse, pathParts []string, queryString url.Values) {
-	switch {
-	case (len(pathParts) == 2) && (pathParts[1] == "users"):
-		limit := queryString.Get("limit")
-		cursor := queryString.Get("cursor")
-		uc.GetUsers(ctx, w, r, limit, cursor, user)
-	case (len(pathParts) == 3) && (pathParts[1] == "users"):
-		uc.GetUser(ctx, w, r, pathParts[2], user)
-	default:
-		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
-		return
-	}
-}*/
-
-// processPost - Parse URL for all the POST paths and call the controller action
-/*
-	POST  "/v1/users/change-email"
-	POST  "/v1/users/change-password"
-	POST  "/v1/users/getuserbyemail"
-*/
-
-/*func (uc *UserController) processPost(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse, pathParts []string) {
-	switch {
-	case (len(pathParts) == 3) && (pathParts[1] == "users"):
-		switch {
-		case pathParts[2] == "change-email":
-			// uc.ChangeEmail(ctx, w, r, user)
-		case pathParts[2] == "getuserbyemail":
-			uc.GetUserByEmail(ctx, w, r, user)
-		case pathParts[2] == "change-password":
-			uc.ChangePassword(ctx, w, r, user)
-		default:
-			common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
-			return
-		}
-	default:
-		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
-		return
-	}
-}*/
-
-// processPut - Parse URL for all the put paths and call the controller action
-/*
- PUT  "/v1/users/{id}"
-*/
-
-/*func (uc *UserController) processPut(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse, pathParts []string, tokenString string) {
-	if (len(pathParts) == 3) && (pathParts[1] == "users") {
-		uc.UpdateUser(ctx, w, r, pathParts[2], user, tokenString)
-	} else {
-		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
-		return
-	}
-}*/
-
-// processDelete - Parse URL for all the delete paths and call the controller action
-/*
- DELETE  "/v1/users/{id}"
-*/
-
-/*func (uc *UserController) processDelete(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse, pathParts []string, tokenString string) {
-	if (len(pathParts) == 3) && (pathParts[1] == "users") {
-		uc.DeleteUser(ctx, w, r, pathParts[2], user, tokenString)
-	} else {
-		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
-		return
-	}
-}*/
-
-// GetUsers - Get Users
-/*func (uc *UserController) GetUsers(ctx context.Context, w http.ResponseWriter, r *http.Request, limit string, cursor string, user *partyproto.GetAuthUserDetailsResponse) {
-	users, err := uc.UserServiceClient.GetUsers(ctx, &partyproto.GetUsersRequest{UserEmail: user.Email, RequestId: user.RequestId})
-	if err != nil {
-		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-		common.RenderErrorJSON(w, "1301", err.Error(), 402, user.RequestId)
-		return
-	}
-	common.RenderJSON(w, users)
-}*/
-
 func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers")
+	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r is", r)
+	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r.Context() is", r.Context())
 	x := r.Context().Value(common.KeyEmailToken)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers x", x)
 	if ctx := r.Context().Value(common.KeyEmailToken); ctx != nil {
@@ -172,19 +49,6 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	/*data := common.GetAuthData(r)
-
-	cdata := partyproto.GetAuthUserDetailsRequest{}
-	cdata.TokenString = data.TokenString
-	cdata.Email = data.Email
-	cdata.RequestUrlPath = r.URL.Path
-	cdata.RequestMethod = r.Method
-
-	md := metadata.Pairs("authorization", "Bearer "+cdata.TokenString)
-
-	ctx := metadata.NewOutgoingContext(r.Context(), md)*/
-	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r is", r)
-	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r.Context() is", r.Context())
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers call common.GetProtoMd started")
 	ctx, cdata := common.GetProtoMd(r)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers call common.GetProtoMd ended")

@@ -2,6 +2,8 @@ package partycontrollers
 
 import (
 	"context"
+	"fmt"
+
 	//"fmt"
 	"net/http"
 	"os"
@@ -28,6 +30,7 @@ var (
 
 // Init the party controllers
 func Init(log *zap.Logger, mux *http.ServeMux, store *goredisstore.GoRedisStore, serverOpt *config.ServerOptions, grpcServerOpt *config.GrpcServerOptions, uptraceOpt *config.UptraceOptions, configFilePath string) error {
+	fmt.Println("internal/controllers/partycontrollers/init.go Init() started")
 	pwd, _ := os.Getwd()
 	keyPath := pwd + filepath.FromSlash(grpcServerOpt.GrpcCaCertPath)
 
@@ -39,78 +42,7 @@ func Init(log *zap.Logger, mux *http.ServeMux, store *goredisstore.GoRedisStore,
 
 	initUsers(mux, serverOpt, log, u, h, workflowClient)
 	initParties(mux, serverOpt, log, u, p, h, workflowClient)
-
-	/*h.SetupServiceConfig(configFilePath)
-	var err error
-	workflowClient, err = h.Builder.BuildCadenceClient()
-	if err != nil {
-		panic(err)
-	}
-
-
-	creds, err := credentials.NewClientTLSFromFile(keyPath, "localhost")
-	if err != nil {
-		log.Error("Error", zap.Int("msgnum", 110), zap.Error(err))
-	}
-
-	tp, err := config.InitTracerProvider()
-	if err != nil {
-		log.Error("Error", zap.Int("msgnum", 9108), zap.Error(err))
-	}
-	defer func() {
-		if err := tp.Shutdown(context.Background()); err != nil {
-			log.Error("Error", zap.Int("msgnum", 9108), zap.Error(err))
-		}
-	}()
-
-	userconn, err := grpc.NewClient(grpcServerOpt.GrpcUserServerPort, grpc.WithTransportCredentials(creds), grpc.WithStatsHandler(otelgrpc.NewClientHandler()))
-	if err != nil {
-		log.Error("Error", zap.Int("msgnum", 113), zap.Error(err))
-		return err
-	}
-
-	partyconn, err := grpc.NewClient(grpcServerOpt.GrpcPartyServerPort, grpc.WithTransportCredentials(creds), grpc.WithStatsHandler(otelgrpc.NewClientHandler()))
-	if err != nil {
-		log.Error("Error", zap.Int("msgnum", 110), zap.Error(err))
-		return err
-	}
-
-	u := partyproto.NewUserServiceClient(userconn)
-	p := partyproto.NewPartyServiceClient(partyconn)
-	pp := NewPartyController(log, p, u)
-
-	hrlParty := common.GetHTTPRateLimiter(store, rateOpt.PartyMaxRate, rateOpt.PartyMaxBurst)
-
-	// This route is only accessible if the user has a valid access_token.
-
-	mux.HandleFunc("/api/messages/public",
-		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			fmt.Println("in /api/messages/protected r", r)
-			fmt.Println("in /api/messages/protected")
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`{"message":"Hello from a Public"}`))
-		}),
-	)
-
-	// This route is only accessible if the user has a valid access_token.
-	mux.Handle("/api/messages/protected", common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain)(
-		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			fmt.Println("in /api/messages/protected r", r)
-			fmt.Println("in /api/messages/protected")
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`{"message":"Hello from a private endpoint! You need to be authenticated to see this."}`))
-		}),
-	))
-
-	// mux.Handle("/v0.1/parties", common.AddMiddleware(pp, common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
-
-	mux.Handle("/v0.1/parties", common.AddMiddleware(hrlParty.RateLimit(pp), common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"parties:cud", "parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
-
-	// mux.Handle("/v0.1/parties", common.AddMiddleware(pp, common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"read:admin-messages"}))
-
-	// mux.Handle("/v0.1/parties/", common.AddMiddleware(pp, common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain)))
-	mux.Handle("/v0.1/parties/", common.AddMiddleware(hrlParty.RateLimit(pp), common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain), common.ValidatePermissions([]string{"parties:cud", "parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain)))*/
-
+	fmt.Println("internal/controllers/partycontrollers/init.go Init() ended")
 	return nil
 }
 
@@ -132,6 +64,7 @@ func InitTest(log *zap.Logger, mux *http.ServeMux, store *goredisstore.GoRedisSt
 }
 
 func initSetup(log *zap.Logger, keyPath string, configFilePath string, serverOpt *config.ServerOptions, grpcServerOpt *config.GrpcServerOptions) (partyproto.UserServiceClient, partyproto.PartyServiceClient, common.WfHelper, client.Client, error) {
+	fmt.Println("internal/controllers/partycontrollers/init.go initSetup() started")
 	creds, err := credentials.NewClientTLSFromFile(keyPath, "localhost")
 	if err != nil {
 		log.Error("Error", zap.Int("msgnum", 110), zap.Error(err))
@@ -168,42 +101,25 @@ func initSetup(log *zap.Logger, keyPath string, configFilePath string, serverOpt
 	}
 
 	p := partyproto.NewPartyServiceClient(partyconn)
-
+	fmt.Println("internal/controllers/partycontrollers/init.go initSetup() ended")
 	return u, p, h, workflowClient, nil
 }
 
 func initParties(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Logger, u partyproto.UserServiceClient, p partyproto.PartyServiceClient, wfHelper common.WfHelper, workflowClient client.Client) {
+	fmt.Println("internal/controllers/partycontrollers/init.go initParties() started")
 	/*pp := NewPartyController(log, p, u)
-
-	mChainCud := common.ChainMiddlewares(
-		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
-		common.ValidatePermissions([]string{"parties:cud"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
-	)
-
-	mChainRead := common.ChainMiddlewares(
-		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
-		common.ValidatePermissions([]string{"parties:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
-	)
 
 	mux.Handle("GET /v0.1/parties", mChainRead(http.HandlerFunc(pp.GetParties)))
 
 	mux.Handle("POST /v0.1/parties/{id}", mChainCud(http.HandlerFunc(pp.CreateParty)))*/
+	fmt.Println("internal/controllers/partycontrollers/init.go initParties() ended")
 }
 
 func initUsers(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Logger, u partyproto.UserServiceClient, wfHelper common.WfHelper, workflowClient client.Client) {
+	fmt.Println("internal/controllers/partycontrollers/init.go initUsers() started")
 	usc := NewUserController(log, u, h, workflowClient)
-	// Chain middlewares
-	/*mChainCud := common.ChainMiddlewares(
-		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
-		common.ValidatePermissions([]string{"users:cud"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
-	)
-
-	mChainRead := common.ChainMiddlewares(
-		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
-		common.ValidatePermissions([]string{"users:read"}, serverOpt.Auth0Audience, serverOpt.Auth0Domain),
-	)*/
-
 	mux.Handle("GET /v0.1/users", http.HandlerFunc(usc.GetUsers))
+	fmt.Println("internal/controllers/partycontrollers/init.go initUsers() ended")
 
 	/*mux.Handle("GET /v0.1/users", mChainRead(http.HandlerFunc(usc.GetUsers)))
 
