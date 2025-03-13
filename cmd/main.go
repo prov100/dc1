@@ -160,15 +160,15 @@ func main() {
 	// Catch-all route to forward all requests to the backend service
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// Create a reverse proxy to the backend service
-    /*proxy := ReverseProxy(BackendServiceURL)
+		/*proxy := ReverseProxy(BackendServiceURL)
 		proxy.ServeHTTP(w, r)*/
 
 		proxy := ReverseProxy(BackendServiceURL)
-    ctx := r.Context()
-    fmt.Println("main111111111 ctx", ctx)
-    // Set values, deadlines, etc.
-    //r = r.WithContext(ctx)
-    //fmt.Println("main22222 ctx", r)
+		ctx := r.Context()
+		fmt.Println("main111111111 ctx", ctx)
+		// Set values, deadlines, etc.
+		// r = r.WithContext(ctx)
+		// fmt.Println("main22222 ctx", r)
 		proxy.ServeHTTP(w, r.WithContext(ctx))
 	})
 
