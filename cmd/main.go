@@ -27,10 +27,10 @@ const (
 
 // ReverseProxy creates a reverse proxy to the backend service
 func ReverseProxy(target string) http.Handler {
-  fmt.Println("ReverseProxy started")
-  fmt.Println("ReverseProxy target", target)
+	fmt.Println("ReverseProxy started")
+	fmt.Println("ReverseProxy target", target)
 	targetURL, _ := url.Parse(target)
-  fmt.Println("ReverseProxy targetURL", targetURL)
+	fmt.Println("ReverseProxy targetURL", targetURL)
 	return httputil.NewSingleHostReverseProxy(targetURL)
 }
 
@@ -145,7 +145,7 @@ func main() {
 	fmt.Println("main backendProxy", backendProxy)
 
 	// Set up the API Gateway routes
-	mux := http.NewServeMux()
+	/*mux := http.NewServeMux()
 
 	fmt.Println("main mux")
 
@@ -154,7 +154,16 @@ func main() {
 	fmt.Println("main mux1111111")
 
 	// Forward all /v1/parties requests to the backend service
-	mux.Handle("/v0.1/parties/", backendProxy)
+	mux.Handle("/v0.1/parties/", backendProxy)*/
+	mux := http.NewServeMux()
+
+	// Catch-all route to forward all requests to the backend service
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Create a reverse proxy to the backend service
+		proxy := ReverseProxy(BackendServiceURL)
+		proxy.ServeHTTP(w, r)
+	})
+
 	fmt.Println("main mux2222222222")
 
 	/*** APIG end ***/

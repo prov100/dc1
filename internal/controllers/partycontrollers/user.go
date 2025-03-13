@@ -173,7 +173,7 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	md := metadata.Pairs("authorization", "Bearer "+cdata.TokenString)
 
 	ctx := metadata.NewOutgoingContext(r.Context(), md)*/
-  fmt.Println("UserController GetUsers r is")
+	fmt.Println("UserController GetUsers r is")
 	ctx, cdata := common.GetProtoMd(r)
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
 	if err != nil {
