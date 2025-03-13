@@ -174,6 +174,7 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 	ctx := metadata.NewOutgoingContext(r.Context(), md)*/
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r is", r)
+	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r.Context() is", r.Context())
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers call common.GetProtoMd started")
 	ctx, cdata := common.GetProtoMd(r)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers call common.GetProtoMd ended")
