@@ -122,14 +122,42 @@ func main() {
 
 		req := r.WithContext(context.WithValue(ctx, common.KeyEmailToken, emailToken))
 		*r = *req
-		fmt.Println("r", r)
-		fmt.Println("r", r.Context())
+		fmt.Println("r is", r)
+		fmt.Println("r.Context()", r.Context())
+
+		reqDump, err := httputil.DumpRequest(r, true)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		fmt.Printf("REQUEST:\n%s", string(reqDump))
+
 		// r = r.WithContext(ctx)
 		// fmt.Println("main111111111 ctx", ctx)
 		fmt.Println("started")
 		proxy.ServeHTTP(w, r)
 		fmt.Println("ended")
 	})
+
+
+
+	// Middleware to inject context values into the request
+	/*injectContext := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// find key value which is set in validate token method
+			a := r.Context().Value(common.KeyEmailToken)
+			emailToken, _ := a.(common.ContextStruct)
+			fmt.Println("emailToken", emailToken)
+
+			// Add a context value to the request
+			ctx := context.WithValue(r.Context(), common.KeyEmailToken, "12345") // Example userID
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
+
+	mux.Handle("/", injectContext(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		proxy.ServeHTTP(w, r)
+	})))*/
 
 	fmt.Println("main mux2222222222")
 
