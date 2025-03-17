@@ -132,8 +132,6 @@ func main() {
 
 		fmt.Printf("REQUEST:\n%s", string(reqDump))
 
-		// r = r.WithContext(ctx)
-		// fmt.Println("main111111111 ctx", ctx)
 		fmt.Println("started")
 		proxy.ServeHTTP(w, req)
 		fmt.Println("ended")
