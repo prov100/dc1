@@ -101,7 +101,7 @@ func main() {
 
 	// fmt.Println("main backendProxy", backendProxy)
 
-  proxy := ReverseProxy(BackendServiceURL)
+	proxy := ReverseProxy(BackendServiceURL)
 
 	// Set up the API Gateway routes
 	mux := http.NewServeMux()
@@ -110,7 +110,7 @@ func main() {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("main mux.HandleFunc function r", r)
 		fmt.Println("main mux.HandleFunc function r.Context()", r.Context())
-		//proxy := ReverseProxy(BackendServiceURL)
+		// proxy := ReverseProxy(BackendServiceURL)
 		fmt.Println("main mux.HandleFunc function ReverseProxy r", r)
 		fmt.Println("main mux.HandleFunc function ReverseProxy r.Context()", r.Context())
 		ctx := r.Context()
