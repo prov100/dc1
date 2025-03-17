@@ -40,7 +40,7 @@ type UserEmail struct {
 	Email string
 }
 
-func getUser(ctx context.Context) *UserEmail {
+func getEmail(ctx context.Context) *UserEmail {
 	user, ok := ctx.Value("user").(*UserEmail)
 
 	if !ok {
@@ -54,7 +54,7 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers")
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r is", r)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r.Context() is", r.Context())
-	userEmail := getUser(r.Context())
+	userEmail := getEmail(r.Context())
 	fmt.Println("userEmail is", userEmail)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers1111111111111111111")
 	x := r.Context().Value(common.KeyEmailToken)

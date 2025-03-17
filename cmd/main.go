@@ -23,11 +23,11 @@ type UserEmail struct {
 	Email string
 }
 
-func setUser(ctx context.Context, u *UserEmail) context.Context {
+func setEmail(ctx context.Context, u *UserEmail) context.Context {
 	return context.WithValue(ctx, "user", u)
 }
 
-func getUser(ctx context.Context) *UserEmail {
+func getEmail(ctx context.Context) *UserEmail {
 	user, ok := ctx.Value("user").(*UserEmail)
 
 	if !ok {
@@ -140,7 +140,7 @@ func main() {
 
 		// req := r.WithContext(context.WithValue(ctx, common.KeyEmailToken, emailToken))
 
-		ctx := setUser(r.Context(), &UserEmail{
+		ctx := setEmail(r.Context(), &UserEmail{
 			Email: "sprov300@gmail.com",
 		})
 
@@ -149,7 +149,7 @@ func main() {
 		fmt.Println("req is", req)
 		fmt.Println("req.Context()", req.Context())
 
-		userEmail := getUser(req.Context())
+		userEmail := getEmail(req.Context())
 		fmt.Println("userEmail is", userEmail)
 
 		reqDump, err := httputil.DumpRequest(req, true)
