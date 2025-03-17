@@ -1,6 +1,7 @@
 package partycontrollers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -35,10 +36,27 @@ func NewUserController(log *zap.Logger, s partyproto.UserServiceClient, wfHelper
 	}
 }
 
+type User1 struct {
+	Email string
+}
+
+func getUser(ctx context.Context) *User1 {
+	user, ok := ctx.Value("user").(*User1)
+
+	if !ok {
+		return nil
+	}
+
+	return user
+}
+
 func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers")
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r is", r)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r.Context() is", r.Context())
+	user1 := getUser(r.Context())
+	fmt.Println("user is", user1)
+	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers1111111111111111111")
 	x := r.Context().Value(common.KeyEmailToken)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers x", x)
 	if ctx := r.Context().Value(common.KeyEmailToken); ctx != nil {

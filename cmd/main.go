@@ -19,6 +19,24 @@ import (
 	"go.uber.org/zap"
 )
 
+type User1 struct {
+	Email string
+}
+
+func setUser(ctx context.Context, u *User1) context.Context {
+	return context.WithValue(ctx, "user", u)
+}
+
+func getUser(ctx context.Context) *User1 {
+	user, ok := ctx.Value("user").(*User1)
+
+	if !ok {
+		return nil
+	}
+
+	return user
+}
+
 /*** APIG start ***/
 // API Gateway configuration
 const (
@@ -113,6 +131,45 @@ func main() {
 		// proxy := ReverseProxy(BackendServiceURL)
 		fmt.Println("main mux.HandleFunc function ReverseProxy r", r)
 		fmt.Println("main mux.HandleFunc function ReverseProxy r.Context()", r.Context())
+		// ctx := r.Context()
+
+		// find key value which is set in validate token method
+		// a := r.Context().Value(common.KeyEmailToken)
+		// emailToken, _ := a.(common.ContextStruct)
+		// fmt.Println("emailToken", emailToken)
+
+		// req := r.WithContext(context.WithValue(ctx, common.KeyEmailToken, emailToken))
+
+		ctx := setUser(r.Context(), &User1{
+			Email: "sprov300@gmail.com",
+		})
+
+		req := r.WithContext(ctx)
+
+		fmt.Println("req is", req)
+		fmt.Println("req.Context()", req.Context())
+
+		user := getUser(req.Context())
+		fmt.Println("user is", user)
+
+		reqDump, err := httputil.DumpRequest(req, true)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		fmt.Printf("REQUEST:\n%s", string(reqDump))
+
+		fmt.Println("started")
+		proxy.ServeHTTP(w, req)
+		fmt.Println("ended")
+	})
+
+	/*mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("main mux.HandleFunc function r", r)
+		fmt.Println("main mux.HandleFunc function r.Context()", r.Context())
+		// proxy := ReverseProxy(BackendServiceURL)
+		fmt.Println("main mux.HandleFunc function ReverseProxy r", r)
+		fmt.Println("main mux.HandleFunc function ReverseProxy r.Context()", r.Context())
 		ctx := r.Context()
 
 		// find key value which is set in validate token method
@@ -135,7 +192,7 @@ func main() {
 		fmt.Println("started")
 		proxy.ServeHTTP(w, req)
 		fmt.Println("ended")
-	})
+	})*/
 
 	// Middleware to inject context values into the request
 	/*injectContext := func(next http.Handler) http.Handler {
