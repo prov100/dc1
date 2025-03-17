@@ -114,9 +114,21 @@ func main() {
 		fmt.Println("main mux.HandleFunc function ReverseProxy r", r)
 		fmt.Println("main mux.HandleFunc function ReverseProxy r.Context()", r.Context())
 		ctx := r.Context()
-		r = r.WithContext(ctx)
-		fmt.Println("main111111111 ctx", ctx)
+
+		// find key value which is set in validate token method
+		a := r.Context().Value(common.KeyEmailToken)
+		emailToken, _ := a.(common.ContextStruct)
+		fmt.Println("emailToken", emailToken)
+
+		req := r.WithContext(context.WithValue(ctx, common.KeyEmailToken, emailToken))
+		*r = *req
+		fmt.Println("r", r)
+		fmt.Println("r", r.Context())
+		// r = r.WithContext(ctx)
+		// fmt.Println("main111111111 ctx", ctx)
+		fmt.Println("started")
 		proxy.ServeHTTP(w, r)
+		fmt.Println("ended")
 	})
 
 	fmt.Println("main mux2222222222")
