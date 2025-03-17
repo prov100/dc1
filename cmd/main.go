@@ -121,11 +121,11 @@ func main() {
 		fmt.Println("emailToken", emailToken)
 
 		req := r.WithContext(context.WithValue(ctx, common.KeyEmailToken, emailToken))
-		*r = *req
-		fmt.Println("r is", r)
-		fmt.Println("r.Context()", r.Context())
+		//*r = *req
+		fmt.Println("req is", req)
+		fmt.Println("req.Context()", req.Context())
 
-		reqDump, err := httputil.DumpRequest(r, true)
+		reqDump, err := httputil.DumpRequest(req, true)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -135,11 +135,9 @@ func main() {
 		// r = r.WithContext(ctx)
 		// fmt.Println("main111111111 ctx", ctx)
 		fmt.Println("started")
-		proxy.ServeHTTP(w, r)
+		proxy.ServeHTTP(w, req)
 		fmt.Println("ended")
 	})
-
-
 
 	// Middleware to inject context values into the request
 	/*injectContext := func(next http.Handler) http.Handler {
