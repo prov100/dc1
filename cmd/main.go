@@ -19,16 +19,16 @@ import (
 	"go.uber.org/zap"
 )
 
-type User1 struct {
+type UserEmail struct {
 	Email string
 }
 
-func setUser(ctx context.Context, u *User1) context.Context {
+func setUser(ctx context.Context, u *UserEmail) context.Context {
 	return context.WithValue(ctx, "user", u)
 }
 
-func getUser(ctx context.Context) *User1 {
-	user, ok := ctx.Value("user").(*User1)
+func getUser(ctx context.Context) *UserEmail {
+	user, ok := ctx.Value("user").(*UserEmail)
 
 	if !ok {
 		return nil
@@ -140,7 +140,7 @@ func main() {
 
 		// req := r.WithContext(context.WithValue(ctx, common.KeyEmailToken, emailToken))
 
-		ctx := setUser(r.Context(), &User1{
+		ctx := setUser(r.Context(), &UserEmail{
 			Email: "sprov300@gmail.com",
 		})
 
@@ -149,8 +149,8 @@ func main() {
 		fmt.Println("req is", req)
 		fmt.Println("req.Context()", req.Context())
 
-		user := getUser(req.Context())
-		fmt.Println("user is", user)
+		userEmail := getUser(req.Context())
+		fmt.Println("userEmail is", userEmail)
 
 		reqDump, err := httputil.DumpRequest(req, true)
 		if err != nil {
