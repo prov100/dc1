@@ -1,0 +1,57 @@
+rani2@rani:~/go/src/github.com/prov100/dc1$ go run cmd/backend/backend.go
+config/config.go:GetViper() configFilePath /home/rani2/go/src/github.com/prov100/dc1/internal/config
+config/config.go:getLogWriter() file &{0xc0002ac540}
+config/config.go:getLogWriter() err <nil>
+config/config.go:SetUpLogging() writerSyncer is &{0xc0002ac540}
+config/config.go:SetUpLogging() encoder is {0xc0002ae740}
+config/config.go:SetUpLogging() core is &{debug {0xc0002ae740} 0xc00029e250}
+config/config.go:SetUpLogging() log is &{0xc0003baae0 false false <nil> <nil>  0xc0002aaa50 -1 0 {}}
+internal/controllers/partycontrollers/init.go Init() started
+internal/controllers/partycontrollers/init.go Init() started mux is &{{{{} {0 0}} 0 0 {{} 0} {{} 0}} {<nil> <nil> {[] map[]} <nil> <nil>} {map[] []} {{{{} {0 0}} 0 0 {{} 0} {{} 0}} map[] [] false}}
+internal/controllers/partycontrollers/init.go initSetup() started
+2025-03-17T10:50:49.693+0530	INFO	common/wf_helper.go:115	Logger created.
+2025-03-17T10:50:49.693+0530	DEBUG	common/wf_factory.go:162	Creating RPC dispatcher outbound	{"ServiceName": "cadence-frontend", "HostPort": "127.0.0.1:7833"}
+2025-03-17T10:50:49.694+0530	INFO	common/wf_helper.go:168	Domain successfully registered.	{"Domain": "samples-domain"}
+internal/controllers/partycontrollers/init.go initSetup() ended
+internal/controllers/partycontrollers/init.go initUsers() started
+internal/controllers/partycontrollers/init.go initUsers() started mux is &{{{{} {0 0}} 0 0 {{} 0} {{} 0}} {<nil> <nil> {[] map[]} <nil> <nil>} {map[] []} {{{{} {0 0}} 0 0 {{} 0} {{} 0}} map[] [] false}}
+internal/controllers/partycontrollers/init.go initUsers() ended
+internal/controllers/partycontrollers/init.go initParties() started
+internal/controllers/partycontrollers/init.go initParties() ended
+internal/controllers/partycontrollers/init.go Init() ended
+server started &{:9061 0xc0003e2180 false <nil> 0s 0s 0s 0s 0 map[] <nil> <nil> <nil> <nil> <nil> <nil> {{} 0} {{} 0} {{} {{} 0} {{} {0 0}}} <nil> {{} {0 0}} map[] map[] [] {{} {{} {} 0} 0}}
+server started at port 9061
+controllers/partycontrollrs/user.go UserController GetUsers
+controllers/partycontrollrs/user.go UserController GetUsers r is &{GET /v0.1/users HTTP/1.1 1 1 map[Accept:[application/json, text/plain, */*] Accept-Encoding:[gzip, deflate, br, zstd] Accept-Language:[en-US,en;q=0.5] Authorization:[Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1TU09vRW41dU5JbDAzeVN3d3FJbSJ9.eyJlbWFpbCI6InNwcm92MzAwQGdtYWlsLmNvbSIsImlzcyI6Imh0dHBzOi8vZGV2LThsM3VhMHQ4ZmhtaDA4dnEudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDY2ZmQwNmQwYmZlYTc4YTgyYmI0MjQ1OSIsImF1ZCI6WyJodHRwczovL3NjZGNzYS5jb20iLCJodHRwczovL2Rldi04bDN1YTB0OGZobWgwOHZxLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE3NDIxODg4OTcsImV4cCI6MTc0MjI3NTI5Nywic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImF6cCI6IlFmVERlQkJnZTBDcGpJdmFNdnpiZ3poYTBhVE0yblVlIiwicGVybWlzc2lvbnMiOlsiYmtnOmN1ZCIsImJrZzpyZWFkIiwiYmtnczpjdWQiLCJia2dzOnJlYWQiLCJia2dzczpjdWQiLCJia2dzczpyZWFkIiwiY2hhcmdlOmN1ZCIsImNoYXJnZTpyZWFkIiwiZXZlbnQ6Y3VkIiwiZXZlbnQ6cmVhZCIsImV2ZW50c3ViOmN1ZCIsImV2ZW50c3ViOnJlYWQiLCJpc3I6Y3VkIiwiaXNycjpjdWQiLCJpc3I6cmVhZCIsImlzcnI6cmVhZCIsImxlZzpjdWQiLCJsZWc6cmVhZCIsInBhcnRpZXM6Y3VkIiwicGFydGllczpyZWFkIiwicmVmZXI6Y3VkIiwicmVmZXI6cmVhZCIsInNlYWw6Y3VkIiwic2VhbDpyZWFkIiwic2hpcHBpbmc6Y3VkIiwic2hpcHBpbmdpbnN0cjpjdWQiLCJzaGlwcGluZ2luc3RyOnJlYWQiLCJzaGlwcGluZzpyZWFkIiwic3J2OmN1ZCIsInNydjpyZWFkIiwic3J2c2NoZWQ6Y3VkIiwic3J2c2NoZWQ6cmVhZCIsInN1cnJlcWFuczpjdWQiLCJzdXJyZXFhbnM6cmVhZCIsInN1cnJlcTpjdWQiLCJzdXJyZXE6cmVhZCIsInRyYW5zcG9ydGNhbGw6Y3VkIiwidHJhbnNwb3J0Y2FsbDpyZWFkIiwidHJhbnNwb3J0ZG9jOmN1ZCIsInRyYW5zcG9ydGRvYzpyZWFkIiwidHM6Y3VkIiwidHM6cmVhZCIsInVzZXJzOmN1ZCIsInVzZXJzOnJlYWQiLCJ1dGU6Y3VkIiwidXRlOnJlYWQiLCJ2ZXNzZWxzY2hlZDpjdWQiLCJ2ZXNzZWxzY2hlZDpyZWFkIiwidm95YWdlOmN1ZCIsInZveWFnZTpyZWFkIl19.XY5XcTQ0bxy5wBRPktucQF4rWZdLBJNWVnU1tgO0I-iYt8JWm6efNgyRrJDwmz9ohcq9jPeXlMwf96X9fAtPeMBfKs19yKs568ImrFQUT3FazVNzmY9K33w_gy_Oc5mrI62l6KVR3j7gotMNLAspm6i0n5BVDO1I6HhDDAcKjWpv_CseO51PpNdBfZCifsf-Txkje21ox6f-EMLCCHAWGLoYQQTGAW_OM9N8x43C0D3zVDvzxCFsnCgSlMhI3kAQE_yLPXcIm6QL_VXul7ycKEHp-FONe7kqSVzBBOIQN6hjeRhPv-95bfi_xs8cp7IECmww4ChQ8THtnXsdeFEOwQ] Origin:[http://localhost:9041] Referer:[http://localhost:9041/] Sec-Fetch-Dest:[empty] Sec-Fetch-Mode:[cors] Sec-Fetch-Site:[same-site] User-Agent:[Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0] X-Forwarded-For:[127.0.0.1]] {} <nil> 0 [] false localhost:9060 map[] map[] <nil> map[] 127.0.0.1:34642 /v0.1/users <nil> <nil> <nil> GET /v0.1/users 0xc00041a550 0xc0002acb40 [] map[]}
+controllers/partycontrollrs/user.go UserController GetUsers r.Context() is context.Background.WithValue(net/http context value http-server, *http.Server).WithValue(net/http context value local-addr, 127.0.0.1:9061).WithCancel.WithCancel
+controllers/partycontrollrs/user.go UserController GetUsers x <nil>
+controllers/partycontrollrs/user.go UserController GetUsers call common.GetProtoMd started
+internal/common/auth.go GetProtoMd r &{GET /v0.1/users HTTP/1.1 1 1 map[Accept:[application/json, text/plain, */*] Accept-Encoding:[gzip, deflate, br, zstd] Accept-Language:[en-US,en;q=0.5] Authorization:[Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1TU09vRW41dU5JbDAzeVN3d3FJbSJ9.eyJlbWFpbCI6InNwcm92MzAwQGdtYWlsLmNvbSIsImlzcyI6Imh0dHBzOi8vZGV2LThsM3VhMHQ4ZmhtaDA4dnEudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDY2ZmQwNmQwYmZlYTc4YTgyYmI0MjQ1OSIsImF1ZCI6WyJodHRwczovL3NjZGNzYS5jb20iLCJodHRwczovL2Rldi04bDN1YTB0OGZobWgwOHZxLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE3NDIxODg4OTcsImV4cCI6MTc0MjI3NTI5Nywic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImF6cCI6IlFmVERlQkJnZTBDcGpJdmFNdnpiZ3poYTBhVE0yblVlIiwicGVybWlzc2lvbnMiOlsiYmtnOmN1ZCIsImJrZzpyZWFkIiwiYmtnczpjdWQiLCJia2dzOnJlYWQiLCJia2dzczpjdWQiLCJia2dzczpyZWFkIiwiY2hhcmdlOmN1ZCIsImNoYXJnZTpyZWFkIiwiZXZlbnQ6Y3VkIiwiZXZlbnQ6cmVhZCIsImV2ZW50c3ViOmN1ZCIsImV2ZW50c3ViOnJlYWQiLCJpc3I6Y3VkIiwiaXNycjpjdWQiLCJpc3I6cmVhZCIsImlzcnI6cmVhZCIsImxlZzpjdWQiLCJsZWc6cmVhZCIsInBhcnRpZXM6Y3VkIiwicGFydGllczpyZWFkIiwicmVmZXI6Y3VkIiwicmVmZXI6cmVhZCIsInNlYWw6Y3VkIiwic2VhbDpyZWFkIiwic2hpcHBpbmc6Y3VkIiwic2hpcHBpbmdpbnN0cjpjdWQiLCJzaGlwcGluZ2luc3RyOnJlYWQiLCJzaGlwcGluZzpyZWFkIiwic3J2OmN1ZCIsInNydjpyZWFkIiwic3J2c2NoZWQ6Y3VkIiwic3J2c2NoZWQ6cmVhZCIsInN1cnJlcWFuczpjdWQiLCJzdXJyZXFhbnM6cmVhZCIsInN1cnJlcTpjdWQiLCJzdXJyZXE6cmVhZCIsInRyYW5zcG9ydGNhbGw6Y3VkIiwidHJhbnNwb3J0Y2FsbDpyZWFkIiwidHJhbnNwb3J0ZG9jOmN1ZCIsInRyYW5zcG9ydGRvYzpyZWFkIiwidHM6Y3VkIiwidHM6cmVhZCIsInVzZXJzOmN1ZCIsInVzZXJzOnJlYWQiLCJ1dGU6Y3VkIiwidXRlOnJlYWQiLCJ2ZXNzZWxzY2hlZDpjdWQiLCJ2ZXNzZWxzY2hlZDpyZWFkIiwidm95YWdlOmN1ZCIsInZveWFnZTpyZWFkIl19.XY5XcTQ0bxy5wBRPktucQF4rWZdLBJNWVnU1tgO0I-iYt8JWm6efNgyRrJDwmz9ohcq9jPeXlMwf96X9fAtPeMBfKs19yKs568ImrFQUT3FazVNzmY9K33w_gy_Oc5mrI62l6KVR3j7gotMNLAspm6i0n5BVDO1I6HhDDAcKjWpv_CseO51PpNdBfZCifsf-Txkje21ox6f-EMLCCHAWGLoYQQTGAW_OM9N8x43C0D3zVDvzxCFsnCgSlMhI3kAQE_yLPXcIm6QL_VXul7ycKEHp-FONe7kqSVzBBOIQN6hjeRhPv-95bfi_xs8cp7IECmww4ChQ8THtnXsdeFEOwQ] Origin:[http://localhost:9041] Referer:[http://localhost:9041/] Sec-Fetch-Dest:[empty] Sec-Fetch-Mode:[cors] Sec-Fetch-Site:[same-site] User-Agent:[Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0] X-Forwarded-For:[127.0.0.1]] {} <nil> 0 [] false localhost:9060 map[] map[] <nil> map[] 127.0.0.1:34642 /v0.1/users <nil> <nil> <nil> GET /v0.1/users 0xc00041a550 0xc0002acb40 [] map[]}
+internal/common/auth.go GetProtoMd call GetAuthData started
+internal/common/auth.go GetAuthData
+internal/common/auth.go GetAuthData r.Context() context.Background.WithValue(net/http context value http-server, *http.Server).WithValue(net/http context value local-addr, 127.0.0.1:9061).WithCancel.WithCancel
+2025/03/17 10:51:43 http: panic serving 127.0.0.1:34642: interface conversion: interface {} is nil, not common.ContextStruct
+goroutine 23 [running]:
+net/http.(*conn).serve.func1()
+	/usr/local/go/src/net/http/server.go:1947 +0xbe
+panic({0x1197c80?, 0xc00027f2f0?})
+	/usr/local/go/src/runtime/panic.go:792 +0x132
+github.com/prov100/dc1/internal/common.GetAuthData(0xc000274dc0)
+	/home/rani2/go/src/github.com/prov100/dc1/internal/common/auth.go:130 +0x216
+github.com/prov100/dc1/internal/common.GetProtoMd(0xc000274dc0)
+	/home/rani2/go/src/github.com/prov100/dc1/internal/common/auth.go:139 +0xf9
+github.com/prov100/dc1/internal/controllers/partycontrollers.(*UserController).GetUsers(0xc0002dd200, {0x151d670, 0xc000436000}, 0xc000274dc0)
+	/home/rani2/go/src/github.com/prov100/dc1/internal/controllers/partycontrollers/user.go:53 +0x445
+net/http.HandlerFunc.ServeHTTP(0xc0003e2180?, {0x151d670?, 0xc000436000?}, 0x6cd036?)
+	/usr/local/go/src/net/http/server.go:2294 +0x29
+net/http.(*ServeMux).ServeHTTP(0x474479?, {0x151d670, 0xc000436000}, 0xc000274dc0)
+	/usr/local/go/src/net/http/server.go:2822 +0x1c4
+net/http.serverHandler.ServeHTTP({0xc00027f1d0?}, {0x151d670?, 0xc000436000?}, 0x6?)
+	/usr/local/go/src/net/http/server.go:3301 +0x8e
+net/http.(*conn).serve(0xc00017b950, {0x1523988, 0xc0005067b0})
+	/usr/local/go/src/net/http/server.go:2102 +0x625
+created by net/http.(*Server).Serve in goroutine 1
+	/usr/local/go/src/net/http/server.go:3454 +0x485
+
+
+

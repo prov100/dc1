@@ -108,8 +108,9 @@ func main() {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		proxy := ReverseProxy(BackendServiceURL)
 		ctx := r.Context()
+		r = r.WithContext(ctx)
 		fmt.Println("main111111111 ctx", ctx)
-		proxy.ServeHTTP(w, r.WithContext(ctx))
+		proxy.ServeHTTP(w, r)
 	})
 
 	fmt.Println("main mux2222222222")
