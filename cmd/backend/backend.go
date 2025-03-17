@@ -68,39 +68,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	/*auth0Config := common.Auth0Config{
-		Port:          serverOpt.BackendServerAddr, // port,
-		SecureOptions: config.SecureOptions(),
-		CorsOptions:   config.CorsOptions(serverOpt.ClientOriginUrl),
-		Audience:      serverOpt.Auth0Audience, // audience,
-		Domain:        serverOpt.Auth0Domain,   // domain,
-	}
-
-	fmt.Println("main: serverOpt.Auth0Audience", serverOpt.Auth0Audience)
-	fmt.Println("main: serverOpt.Auth0Domain", serverOpt.Auth0Domain)*/
-
-	/*router := http.NewServeMux()
-	newRouter := common.Router(router)
-	corsMiddleware := cors.New(auth0Config.CorsOptions)
-	routerWithCORS := corsMiddleware.Handler(newRouter)
-
-	secureMiddleware := secure.New(auth0Config.SecureOptions)
-	finalHandler := secureMiddleware.Handler(routerWithCORS)
-
-	rateOpt, err := config.GetRateConfig(log, v)
-	if err != nil {
-		log.Error("Error",
-			zap.Int("msgnum", 103),
-			zap.Error(err))
-		os.Exit(1)
-	}
-
-	jwtOpt, err := config.GetJWTConfig(log, v, false, "SC_DCSA_JWT_KEY", "SC_DCSA_JWT_DURATION")
-	if err != nil {
-		log.Error("Error", zap.Int("msgnum", 103), zap.Error(err))
-		os.Exit(1)
-	}
-	*/
 	redisOpt, _, _, grpcServerOpt, _, _, uptraceOpt := config.GetConfigOpt(log, v)
 
 	redisService, err := common.CreateRedisService(log, redisOpt)

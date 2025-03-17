@@ -69,33 +69,10 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	// common.RenderJSON(w, "users are")
 }
 
-// GetUser - Get User Details
-/*func (uc *UserController) GetUser(ctx context.Context, w http.ResponseWriter, r *http.Request, id string, user *partyproto.GetAuthUserDetailsResponse) {
-	usr, err := uc.UserServiceClient.GetUser(ctx, &partyproto.GetUserRequest{GetRequest: &commonproto.GetRequest{Id: id, UserEmail: user.Email, RequestId: user.RequestId}})
-	if err != nil {
-		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-		common.RenderErrorJSON(w, "1303", err.Error(), 400, user.RequestId)
-		return
-	}
-
-	common.RenderJSON(w, usr)
-}*/
-
 func (uc *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("GetUser")
 	id := r.PathValue("id")
 	fmt.Println("id in GetUser is", id)
-	/*data := common.GetAuthData(r)
-
-	cdata := partyproto.GetAuthUserDetailsRequest{}
-	cdata.TokenString = data.TokenString
-	cdata.Email = data.Email
-	cdata.RequestUrlPath = r.URL.Path
-	cdata.RequestMethod = r.Method
-
-	md := metadata.Pairs("authorization", "Bearer "+cdata.TokenString)
-
-	ctx := metadata.NewOutgoingContext(r.Context(), md)*/
 	ctx, cdata := common.GetProtoMd(r)
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
 	if err != nil {
@@ -113,35 +90,6 @@ func (uc *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	common.RenderJSON(w, usr)
 }
-
-// ChangeEmail - Changes Email
-/*func (uc *UserController) ChangeEmail(ctx context.Context, w http.ResponseWriter, r *http.Request, user *partyproto.GetAuthUserDetailsResponse) {
-	select {
-	case <-ctx.Done():
-		common.RenderErrorJSON(w, "1002", "Client closed connection", 402, user.RequestId)
-		return
-	default:
-		form := partyproto.ChangeEmailRequest{}
-		decoder := json.NewDecoder(r.Body)
-		err := decoder.Decode(&form)
-		if err != nil {
-			uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-			common.RenderErrorJSON(w, "1304", err.Error(), 402, user.RequestId)
-			return
-		}
-		form.HostURL = r.Host
-		form.UserEmail = user.Email
-		form.RequestId = user.RequestId
-		_, err = uc.UserServiceClient.ChangeEmail(ctx, &form)
-		if err != nil {
-			uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-			common.RenderErrorJSON(w, "1305", err.Error(), 402, user.RequestId)
-			return
-		}
-
-		common.RenderJSON(w, "Your Email Changed successfully, Please Check your email and confirm your acoount")
-	}
-}*/
 
 // ChangePassword - Changes Password
 func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request) {

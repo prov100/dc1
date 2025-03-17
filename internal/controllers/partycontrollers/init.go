@@ -14,7 +14,6 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 
 	partyproto "github.com/prov100/dc1/internal/protogen/party/v1"
-	// interceptors "github.com/prov100/dc1/internal/interceptors"
 
 	"github.com/throttled/throttled/v2/store/goredisstore"
 	"go.uber.org/cadence/client"
@@ -31,6 +30,7 @@ var (
 // Init the party controllers
 func Init(log *zap.Logger, mux *http.ServeMux, store *goredisstore.GoRedisStore, serverOpt *config.ServerOptions, grpcServerOpt *config.GrpcServerOptions, uptraceOpt *config.UptraceOptions, configFilePath string) error {
 	fmt.Println("internal/controllers/partycontrollers/init.go Init() started")
+	fmt.Println("internal/controllers/partycontrollers/init.go Init() started mux is", mux)
 	pwd, _ := os.Getwd()
 	keyPath := pwd + filepath.FromSlash(grpcServerOpt.GrpcCaCertPath)
 
@@ -117,6 +117,7 @@ func initParties(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.L
 
 func initUsers(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Logger, u partyproto.UserServiceClient, wfHelper common.WfHelper, workflowClient client.Client) {
 	fmt.Println("internal/controllers/partycontrollers/init.go initUsers() started")
+	fmt.Println("internal/controllers/partycontrollers/init.go initUsers() started mux is", mux)
 	usc := NewUserController(log, u, h, workflowClient)
 	mux.Handle("GET /v0.1/users", http.HandlerFunc(usc.GetUsers))
 	fmt.Println("internal/controllers/partycontrollers/init.go initUsers() ended")

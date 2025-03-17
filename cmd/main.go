@@ -29,29 +29,8 @@ const (
 func ReverseProxy(target string) http.Handler {
 	fmt.Println("ReverseProxy started")
 	fmt.Println("ReverseProxy target", target)
-	/*targetURL, _ := url.Parse(target)
-	fmt.Println("ReverseProxy targetURL", targetURL)
-	return httputil.NewSingleHostReverseProxy(targetURL)*/
-
 	targetURL, _ := url.Parse(target)
 	proxy := httputil.NewSingleHostReverseProxy(targetURL)
-	// Modify the request to include the context
-	proxy.Director = func(req *http.Request) {
-		req.URL.Scheme = targetURL.Scheme
-		req.URL.Host = targetURL.Host
-		req.URL.Path = targetURL.Path + req.URL.Path
-
-		// Forward the context to the backend service
-		if ctx := req.Context().Value(common.KeyEmailToken); ctx != nil {
-			if emailToken, ok := ctx.(common.ContextStruct); ok {
-				fmt.Println("ReverseProxy emailToken", emailToken)
-				// Create a new context with the email and token
-				newCtx := context.WithValue(req.Context(), common.KeyEmailToken, emailToken)
-				*req = *req.WithContext(newCtx)
-			}
-		}
-	}
-
 	return proxy
 }
 
@@ -107,33 +86,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	/*auth0Config := common.Auth0Config{
-		Port:          serverOpt.ApigServerAddr, // port,
-		SecureOptions: config.SecureOptions(),
-		CorsOptions:   config.CorsOptions(serverOpt.ClientOriginUrl),
-		Audience:      serverOpt.Auth0Audience, // audience,
-		Domain:        serverOpt.Auth0Domain,   // domain,
-	}
-
-	fmt.Println("main: serverOpt.Auth0Audience", serverOpt.Auth0Audience)
-	fmt.Println("main: serverOpt.Auth0Domain", serverOpt.Auth0Domain)*/
-
-	/*router := http.NewServeMux()
-	newRouter := common.Router(router)
-	corsMiddleware := cors.New(auth0Config.CorsOptions)
-	routerWithCORS := corsMiddleware.Handler(newRouter)
-
-	secureMiddleware := secure.New(auth0Config.SecureOptions)
-	finalHandler := secureMiddleware.Handler(routerWithCORS)*/
-
-	/*rateOpt, err := config.GetRateConfig(log, v)
-	if err != nil {
-		log.Error("Error",
-			zap.Int("msgnum", 103),
-			zap.Error(err))
-		os.Exit(1)
-	}*/
-
 	jwtOpt, err := config.GetJWTConfig(log, v, false, "SC_DCSA_JWT_KEY", "SC_DCSA_JWT_DURATION")
 	if err != nil {
 		log.Error("Error", zap.Int("msgnum", 103), zap.Error(err))
@@ -141,22 +93,6 @@ func main() {
 	}
 
 	common.SetJWTOpt(jwtOpt)
-
-	/*redisOpt, _, _, grpcServerOpt, _, _, uptraceOpt := config.GetConfigOpt(log, v)
-
-	redisService, err := common.CreateRedisService(log, redisOpt)
-	if err != nil {
-		log.Error("Error", zap.Int("msgnum", 750), zap.Error(err))
-		os.Exit(1)
-	}
-
-	store, err := goredisstore.New(redisService.RedisClient, "throttled:")
-	if err != nil {
-		log.Error("Error",
-			zap.Int("msgnum", 754),
-			zap.Error(err))
-		os.Exit(1)
-	}*/
 
 	/*** APIG start ***/
 
@@ -166,30 +102,13 @@ func main() {
 	fmt.Println("main backendProxy", backendProxy)
 
 	// Set up the API Gateway routes
-	/*mux := http.NewServeMux()
-
-	fmt.Println("main mux")
-
-	// Forward all /v1/users requests to the backend service
-	mux.Handle("/v0.1/users", backendProxy)
-	fmt.Println("main mux1111111")
-
-	// Forward all /v1/parties requests to the backend service
-	mux.Handle("/v0.1/parties/", backendProxy)*/
 	mux := http.NewServeMux()
 
 	// Catch-all route to forward all requests to the backend service
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// Create a reverse proxy to the backend service
-		/*proxy := ReverseProxy(BackendServiceURL)
-		proxy.ServeHTTP(w, r)*/
-
 		proxy := ReverseProxy(BackendServiceURL)
 		ctx := r.Context()
 		fmt.Println("main111111111 ctx", ctx)
-		// Set values, deadlines, etc.
-		// r = r.WithContext(ctx)
-		// fmt.Println("main22222 ctx", r)
 		proxy.ServeHTTP(w, r.WithContext(ctx))
 	})
 
@@ -199,23 +118,12 @@ func main() {
 
 	// Chain middlewares
 	finalHandler := common.ChainMiddlewares(
-		// cors.New(auth0Config.CorsOptions),
-		// secure.New(auth0Config.SecureOptions),
 		common.HandleCacheControl,
 		common.CorsMiddleware,
 		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)(mux)
 
 	fmt.Println("main mux333333333333333")
-	// mux := http.NewServeMux()
-	/*configFilePath := v.GetString("SC_DCSA_WORKFLOW_CONFIG_FILE_PATH")
-	err = partycontrollers.Init(log, rateOpt, jwtOpt, router, store, serverOpt, grpcServerOpt, uptraceOpt, configFilePath)
-	if err != nil {
-		log.Error("Error",
-			zap.Int("msgnum", 110),
-			zap.Error(err))
-		os.Exit(1)
-	}*/
 
 	if serverOpt.ServerTLS == "true" {
 		fmt.Println("main mux4444444444444 ServerTLS true")
