@@ -24,11 +24,11 @@ type UserEmail struct {
 }
 
 func setEmail(ctx context.Context, u *UserEmail) context.Context {
-	return context.WithValue(ctx, "user", u)
+	return context.WithValue(ctx, "email", u)
 }
 
 func getEmail(ctx context.Context) *UserEmail {
-	user, ok := ctx.Value("user").(*UserEmail)
+	user, ok := ctx.Value("email").(*UserEmail)
 
 	if !ok {
 		return nil
@@ -149,8 +149,8 @@ func main() {
 		fmt.Println("req is", req)
 		fmt.Println("req.Context()", req.Context())
 
-		userEmail := getEmail(req.Context())
-		fmt.Println("userEmail is", userEmail)
+		email := getEmail(req.Context())
+		fmt.Println("email is", email)
 
 		reqDump, err := httputil.DumpRequest(req, true)
 		if err != nil {
