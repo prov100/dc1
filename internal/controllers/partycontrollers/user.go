@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/prov100/dc1/internal/common"
+	"github.com/prov100/dc1/internal/config"
 	partyproto "github.com/prov100/dc1/internal/protogen/party/v1"
 
 	"go.uber.org/cadence/client"
@@ -17,15 +18,17 @@ type UserController struct {
 	UserServiceClient partyproto.UserServiceClient
 	wfHelper          common.WfHelper
 	workflowClient    client.Client
+	ServerOpt         *config.ServerOptions
 }
 
 // NewUserController - Used to create a users handler
-func NewUserController(log *zap.Logger, s partyproto.UserServiceClient, wfHelper common.WfHelper, workflowClient client.Client) *UserController {
+func NewUserController(log *zap.Logger, s partyproto.UserServiceClient, wfHelper common.WfHelper, workflowClient client.Client, serverOpt *config.ServerOptions) *UserController {
 	return &UserController{
 		log:               log,
 		UserServiceClient: s,
 		wfHelper:          wfHelper,
 		workflowClient:    workflowClient,
+		ServerOpt:         serverOpt,
 	}
 }
 
@@ -33,18 +36,13 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers")
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r is", r)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r.Context() is", r.Context())
-	/*email := getEmail(r.Context())
-	fmt.Println("email is", email)
-	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers1111111111111111111")
-	x := r.Context().Value(common.KeyEmailToken)
-	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers x", x)*/
-	/*if ctx := r.Context().Value(common.KeyEmailToken); ctx != nil {
-		fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers11111111111")
-		if emailToken, ok := ctx.(common.ContextStruct); ok {
-			fmt.Printf("User Email: %s", emailToken.Email)
-			fmt.Printf("Token: %s", emailToken.TokenString)
-		}
-	}*/
+	requestID := common.GetRequestID()
+	err := common.ValidatePermissions(w, r, []string{"users:cud"}, uc.ServerOpt.Auth0Audience, uc.ServerOpt.Auth0Domain)
+	if err != nil {
+		common.RenderErrorJSON(w, "1001", err.Error(), 401, requestID)
+		return
+	}
+
 	email := r.Header.Get("X-User-Email")
 	token := r.Header.Get("X-Auth-Token")
 	fmt.Println("email is", email)

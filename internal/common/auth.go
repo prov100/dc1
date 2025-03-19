@@ -170,7 +170,7 @@ func GetProtoMd(r *http.Request, email, tokenString string) (context.Context, pa
 	return ctx, cdata
 }
 
-func ValidatePermissions(expectedClaims []string, audience string, domain string) func(next http.Handler) http.Handler {
+/*func ValidatePermissions(expectedClaims []string, audience string, domain string) func(next http.Handler) http.Handler {
 	fmt.Println("internal/common/auth.go ValidatePermissions1111")
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -201,6 +201,34 @@ func ValidatePermissions(expectedClaims []string, audience string, domain string
 			next.ServeHTTP(w, r)
 		})
 	}
+}*/
+
+func ValidatePermissions(w http.ResponseWriter, r *http.Request, expectedClaims []string, audience string, domain string) error {
+	fmt.Println("internal/common/auth.go ValidatePermissions1111")
+	tokenString, err := getToken(r)
+	if err != nil {
+		http.Error(w, "Error parsing token", http.StatusUnauthorized)
+		return errors.New("Error parsing token")
+	}
+	_, claims, err := getClaims(audience, domain, tokenString, w, r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return errors.New("Error parsing token")
+	}
+
+	fmt.Println("claims", claims)
+	fmt.Println("claims.Permissions", claims.Permissions)
+	if len(claims.Permissions) == 0 {
+		fmt.Println("in len(claims.Permissions) err is permission denied")
+		// RenderJSON(w, "Permission Denied")
+		return errors.New("Permission Denied")
+	}
+	fmt.Println("ValidatePermissions111111")
+	if !claims.HasPermissions(expectedClaims) {
+		// RenderJSON(w, "Permission Denied")
+		return errors.New("Permission Denied")
+	}
+	return nil
 }
 
 func getClaims(audience string, domain string, tokenString string, w http.ResponseWriter, r *http.Request) (*jwtmiddleware.JWTMiddleware, *CustomClaims, error) {

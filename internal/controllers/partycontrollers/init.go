@@ -118,7 +118,7 @@ func initParties(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.L
 func initUsers(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Logger, u partyproto.UserServiceClient, wfHelper common.WfHelper, workflowClient client.Client) {
 	fmt.Println("internal/controllers/partycontrollers/init.go initUsers() started")
 	fmt.Println("internal/controllers/partycontrollers/init.go initUsers() started mux is", mux)
-	usc := NewUserController(log, u, h, workflowClient)
+	usc := NewUserController(log, u, h, workflowClient, serverOpt)
 	mux.Handle("GET /v0.1/users", http.HandlerFunc(usc.GetUsers))
 	fmt.Println("internal/controllers/partycontrollers/init.go initUsers() ended")
 
