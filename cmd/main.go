@@ -112,6 +112,21 @@ func main() {
 
 	common.SetJWTOpt(jwtOpt)
 
+  // Create a ServeMux for routing
+  mux := http.NewServeMux()
+
+  // Chain middleware: logging -> JWT validation
+  chain := common.ChainMiddlewares(
+    //middleware.LoggingMiddleware(logger),
+    common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+  )
+
+  // Create a proxy handler for the backend service
+  proxyHandler := handlers.NewProxyHandler(BackendServiceURL)
+
+  // Apply the middleware chain to all routes
+  mux.Handle("/v0.1/users", chain(proxyHandler))
+
 	/*** APIG start ***/
 
 	// Create a reverse proxy to the backend service
@@ -119,7 +134,7 @@ func main() {
 
 	// fmt.Println("main backendProxy", backendProxy)
 
-	proxy := ReverseProxy(BackendServiceURL)
+	/*proxy := ReverseProxy(BackendServiceURL)
 
 	// Set up the API Gateway routes
 	mux := http.NewServeMux()
@@ -162,7 +177,7 @@ func main() {
 		fmt.Println("started")
 		proxy.ServeHTTP(w, req)
 		fmt.Println("ended")
-	})
+	})*/
 
 	/*mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("main mux.HandleFunc function r", r)
@@ -217,11 +232,11 @@ func main() {
 	/*** APIG end ***/
 
 	// Chain middlewares
-	finalHandler := common.ChainMiddlewares(
+	/*finalHandler := common.ChainMiddlewares(
 		common.HandleCacheControl,
 		common.CorsMiddleware,
 		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
-	)(mux)
+	)(mux)*/
 
 	fmt.Println("main mux333333333333333")
 
@@ -311,4 +326,21 @@ func main() {
 		<-idleConnsClosed
 
 	}
+}
+
+func NewProxyHandler(backendURL string) http.Handler {
+  backend, _ := url.Parse(backendURL)
+  proxy := &httputil.ReverseProxy{
+  Rewrite: func(r *httputil.ProxyRequest) {
+  // Copy the original request's context to the new request
+  r.Out = r.Out.WithContext(r.In.Context())
+
+  // Set the backend URL and other headers
+  r.SetURL(backend)
+  r.SetXForwarded()
+  r.Out.Header.Set("X-Forwarded-Host", r.In.Header.Get("Host"))
+  r.Out.Host = backend.Host
+  },
+  }
+  return proxy
 }
