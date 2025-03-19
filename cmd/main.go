@@ -118,6 +118,8 @@ func main() {
 	// Chain middleware: logging -> JWT validation
 	chain := common.ChainMiddlewares(
 		// middleware.LoggingMiddleware(logger),
+		common.HandleCacheControl,
+		common.CorsMiddleware,
 		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)
 
@@ -239,7 +241,6 @@ func main() {
 	)(mux)*/
 
 	fmt.Println("main mux333333333333333")
-
 	if serverOpt.ServerTLS == "true" {
 		fmt.Println("main mux4444444444444 ServerTLS true")
 		var caCertPath, certPath, keyPath string
@@ -254,7 +255,7 @@ func main() {
 		fmt.Println("main:serverOpt.ApigServerAddr", serverOpt.ApigServerAddr)
 		srv := &http.Server{
 			Addr:      ":" + serverOpt.ApigServerAddr,
-			Handler:   finalHandler, // mux,
+			Handler:   mux, // finalHandler, // mux,
 			TLSConfig: tlsConfig,
 		}
 
@@ -292,8 +293,9 @@ func main() {
 		fmt.Println("main mux4444444444444 ServerTLS false")
 		srv := &http.Server{
 			Addr:    ":" + serverOpt.ApigServerAddr,
-			Handler: finalHandler, // mux,
+			Handler: mux, // finalHandler, // mux,
 		}
+
 		fmt.Println("server started", srv)
 		idleConnsClosed := make(chan struct{})
 		go func() {
@@ -333,7 +335,13 @@ func NewProxyHandler(backendURL string) http.Handler {
 	proxy := &httputil.ReverseProxy{
 		Rewrite: func(r *httputil.ProxyRequest) {
 			// Copy the original request's context to the new request
+			fmt.Println("NewProxyHandler r.In.Context()", r.In.Context())
+
 			r.Out = r.Out.WithContext(r.In.Context())
+			fmt.Println("NewProxyHandler r.Out", r.Out)
+			fmt.Println("NewProxyHandler r.Out.Context()", r.Out.Context())
+			// print keyemailtoken which we sent to request
+			fmt.Println("NewProxyHandler context value", r.Out.Context().Value(common.KeyEmailToken).(common.ContextStruct))
 
 			// Set the backend URL and other headers
 			r.SetURL(backend)

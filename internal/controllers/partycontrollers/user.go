@@ -54,11 +54,11 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers")
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r is", r)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r.Context() is", r.Context())
-	email := getEmail(r.Context())
+	/*email := getEmail(r.Context())
 	fmt.Println("email is", email)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers1111111111111111111")
 	x := r.Context().Value(common.KeyEmailToken)
-	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers x", x)
+	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers x", x)*/
 	if ctx := r.Context().Value(common.KeyEmailToken); ctx != nil {
 		fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers11111111111")
 		if emailToken, ok := ctx.(common.ContextStruct); ok {
