@@ -126,7 +126,6 @@ func main() {
 	// Create a proxy handler for the backend service
 	proxyHandler := NewProxyHandler(BackendServiceURL)
 
-	// Apply the middleware chain to all routes
 	mux.Handle("/v0.1/users", chain(proxyHandler))
 
 	/*** APIG start ***/
@@ -336,12 +335,21 @@ func NewProxyHandler(backendURL string) http.Handler {
 		Rewrite: func(r *httputil.ProxyRequest) {
 			// Copy the original request's context to the new request
 			fmt.Println("NewProxyHandler r.In.Context()", r.In.Context())
-
+			ctx := r.In.Context()
 			r.Out = r.Out.WithContext(r.In.Context())
 			fmt.Println("NewProxyHandler r.Out", r.Out)
 			fmt.Println("NewProxyHandler r.Out.Context()", r.Out.Context())
 			// print keyemailtoken which we sent to request
 			fmt.Println("NewProxyHandler context value", r.Out.Context().Value(common.KeyEmailToken).(common.ContextStruct))
+
+			// Extract the context data (e.g., JWT claims)
+			if claims, ok := ctx.Value(common.KeyEmailToken).(common.ContextStruct); ok {
+				fmt.Println("claims.Email", claims.Email)
+				fmt.Println("claims.TokenString", claims.TokenString)
+				// Add the context data to the request headers
+				r.Out.Header.Set("X-User-Email", claims.Email)
+				r.Out.Header.Set("X-Auth-Token", claims.TokenString)
+			}
 
 			// Set the backend URL and other headers
 			r.SetURL(backend)

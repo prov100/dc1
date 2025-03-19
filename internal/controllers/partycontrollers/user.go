@@ -1,21 +1,14 @@
 package partycontrollers
 
 import (
-	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/prov100/dc1/internal/common"
-	commonproto "github.com/prov100/dc1/internal/protogen/common/v1"
 	partyproto "github.com/prov100/dc1/internal/protogen/party/v1"
-	userworkflows "github.com/prov100/dc1/internal/workflows/userworkflows"
 
-	"github.com/pborman/uuid"
 	"go.uber.org/cadence/client"
 	"go.uber.org/zap"
-	"google.golang.org/grpc/metadata"
 )
 
 // UserController - used for
@@ -36,20 +29,6 @@ func NewUserController(log *zap.Logger, s partyproto.UserServiceClient, wfHelper
 	}
 }
 
-type UserEmail struct {
-	Email string
-}
-
-func getEmail(ctx context.Context) *UserEmail {
-	user, ok := ctx.Value("email").(*UserEmail)
-
-	if !ok {
-		return nil
-	}
-
-	return user
-}
-
 func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers")
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r is", r)
@@ -59,16 +38,21 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers1111111111111111111")
 	x := r.Context().Value(common.KeyEmailToken)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers x", x)*/
-	if ctx := r.Context().Value(common.KeyEmailToken); ctx != nil {
+	/*if ctx := r.Context().Value(common.KeyEmailToken); ctx != nil {
 		fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers11111111111")
 		if emailToken, ok := ctx.(common.ContextStruct); ok {
 			fmt.Printf("User Email: %s", emailToken.Email)
 			fmt.Printf("Token: %s", emailToken.TokenString)
 		}
-	}
+	}*/
+	email := r.Header.Get("X-User-Email")
+	token := r.Header.Get("X-Auth-Token")
+	fmt.Println("email is", email)
+	fmt.Println("token is", token)
 
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers call common.GetProtoMd started")
-	ctx, cdata := common.GetProtoMd(r)
+	// ctx, cdata := common.GetProtoMd(r)
+	ctx, cdata := common.GetProtoMd(r, email, token)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers call common.GetProtoMd ended")
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
 	if err != nil {
@@ -87,7 +71,7 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	// common.RenderJSON(w, "users are")
 }
 
-func (uc *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
+/*func (uc *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("GetUser")
 	id := r.PathValue("id")
 	fmt.Println("id in GetUser is", id)
@@ -245,4 +229,4 @@ func (uc *UserController) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	common.RenderJSON(w, "response")
-}
+}*/

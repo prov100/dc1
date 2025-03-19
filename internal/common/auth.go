@@ -124,7 +124,7 @@ func CreateCtxJWT(ctx context.Context) (context.Context, error) {
 }
 
 // GetAuthData - used to get auth details
-func GetAuthData(r *http.Request) ContextStruct {
+/*func GetAuthData(r *http.Request) ContextStruct {
 	fmt.Println("internal/common/auth.go GetAuthData")
 	fmt.Println("internal/common/auth.go GetAuthData r.Context()", r.Context())
 	data := r.Context().Value(KeyEmailToken).(ContextStruct)
@@ -142,6 +142,23 @@ func GetProtoMd(r *http.Request) (context.Context, partyproto.GetAuthUserDetails
 	cdata := partyproto.GetAuthUserDetailsRequest{}
 	cdata.TokenString = data.TokenString
 	cdata.Email = data.Email
+	cdata.RequestUrlPath = r.URL.Path
+	cdata.RequestMethod = r.Method
+	fmt.Println("internal/common/auth.go GetProtoMd cdata", cdata)
+	md := metadata.Pairs("authorization", "Bearer "+cdata.TokenString)
+	fmt.Println("internal/common/auth.go GetProtoMd md", md)
+
+	ctx := metadata.NewOutgoingContext(r.Context(), md)
+	fmt.Println("internal/common/auth.go GetProtoMd ctx", md)
+	return ctx, cdata
+}*/
+
+// GetProtoMd - used to get auth details and context
+func GetProtoMd(r *http.Request, email, tokenString string) (context.Context, partyproto.GetAuthUserDetailsRequest) {
+	fmt.Println("internal/common/auth.go GetProtoMd r", r)
+	cdata := partyproto.GetAuthUserDetailsRequest{}
+	cdata.TokenString = tokenString
+	cdata.Email = email
 	cdata.RequestUrlPath = r.URL.Path
 	cdata.RequestMethod = r.Method
 	fmt.Println("internal/common/auth.go GetProtoMd cdata", cdata)

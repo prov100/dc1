@@ -33,7 +33,7 @@ func NewPartyController(log *zap.Logger, partyServiceClient partyproto.PartyServ
 }
 
 // ServeHTTP - parse url and call controller action
-func (pp *PartyController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+/*func (pp *PartyController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("partycontrollers/party.go ServeHTTP()")
 	data := common.GetAuthData(r)
 	cdata := partyproto.GetAuthUserDetailsRequest{}
@@ -72,7 +72,7 @@ func (pp *PartyController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		common.RenderErrorJSON(w, "1000", "Invalid Request", 400, user.RequestId)
 		return
 	}
-}
+}*/
 
 // processGet - Parse URL for all the GET paths and call the controller action
 /*
