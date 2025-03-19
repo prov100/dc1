@@ -26,7 +26,7 @@ func TestGetUsers(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-	req, err := http.NewRequest("GET", "http://localhost:6060/v0.1/users", nil)
+	req, err := http.NewRequest("GET", "http://localhost:9061/v0.1/users", nil)
 	if err != nil {
 		t.Error(err)
 		return
@@ -89,7 +89,7 @@ func TestGetUser(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-	req, err := http.NewRequest("GET", "https://localhost:6060/v0.1/users/auth0|66fd06d0bfea78a82bb42459", nil)
+	req, err := http.NewRequest("GET", "https://localhost:9061/v0.1/users/auth0|66fd06d0bfea78a82bb42459", nil)
 	if err != nil {
 		t.Error(err)
 		return
@@ -147,7 +147,7 @@ func TestGetUserByEmail(t *testing.T) {
 
 	data := []byte(`{"email" : "sprov300@gmail.com"}`)
 
-	req, err := http.NewRequest("POST", "https://localhost:6060/v0.1/users/getuserbyemail", bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", "https://localhost:9061/v0.1/users/getuserbyemail", bytes.NewBuffer(data))
 	if err != nil {
 		t.Error(err)
 		return
@@ -206,7 +206,7 @@ func TestChangePassword(t *testing.T) {
 
 	data := []byte(`{"email" : "sprov300@gmail.com"}`)
 
-	req, err := http.NewRequest("POST", "http://localhost:6060/v0.1/users/change-password", bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", "http://localhost:9061/v0.1/users/change-password", bytes.NewBuffer(data))
 	if err != nil {
 		t.Error(err)
 		return
