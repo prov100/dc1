@@ -112,20 +112,20 @@ func main() {
 
 	common.SetJWTOpt(jwtOpt)
 
-  // Create a ServeMux for routing
-  mux := http.NewServeMux()
+	// Create a ServeMux for routing
+	mux := http.NewServeMux()
 
-  // Chain middleware: logging -> JWT validation
-  chain := common.ChainMiddlewares(
-    //middleware.LoggingMiddleware(logger),
-    common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
-  )
+	// Chain middleware: logging -> JWT validation
+	chain := common.ChainMiddlewares(
+		// middleware.LoggingMiddleware(logger),
+		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
+	)
 
-  // Create a proxy handler for the backend service
-  proxyHandler := handlers.NewProxyHandler(BackendServiceURL)
+	// Create a proxy handler for the backend service
+	proxyHandler := NewProxyHandler(BackendServiceURL)
 
-  // Apply the middleware chain to all routes
-  mux.Handle("/v0.1/users", chain(proxyHandler))
+	// Apply the middleware chain to all routes
+	mux.Handle("/v0.1/users", chain(proxyHandler))
 
 	/*** APIG start ***/
 
@@ -329,18 +329,18 @@ func main() {
 }
 
 func NewProxyHandler(backendURL string) http.Handler {
-  backend, _ := url.Parse(backendURL)
-  proxy := &httputil.ReverseProxy{
-  Rewrite: func(r *httputil.ProxyRequest) {
-  // Copy the original request's context to the new request
-  r.Out = r.Out.WithContext(r.In.Context())
+	backend, _ := url.Parse(backendURL)
+	proxy := &httputil.ReverseProxy{
+		Rewrite: func(r *httputil.ProxyRequest) {
+			// Copy the original request's context to the new request
+			r.Out = r.Out.WithContext(r.In.Context())
 
-  // Set the backend URL and other headers
-  r.SetURL(backend)
-  r.SetXForwarded()
-  r.Out.Header.Set("X-Forwarded-Host", r.In.Header.Get("Host"))
-  r.Out.Host = backend.Host
-  },
-  }
-  return proxy
+			// Set the backend URL and other headers
+			r.SetURL(backend)
+			r.SetXForwarded()
+			r.Out.Header.Set("X-Forwarded-Host", r.In.Header.Get("Host"))
+			r.Out.Host = backend.Host
+		},
+	}
+	return proxy
 }
