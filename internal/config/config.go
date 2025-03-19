@@ -140,9 +140,8 @@ type UserOptions struct {
 
 // UserTestOptions - for test user login
 type UserTestOptions struct {
-	// Email     string `mapstructure:"email"`
-	// Password  string `mapstructure:"password"`
-	RequestId   string `mapstructure:"request_id"`
+	Email string `mapstructure:"email"`
+	// RequestId   string `mapstructure:"request_id"`
 	Tokenstring string `mapstructure:"tokenstring"`
 }
 
@@ -337,9 +336,9 @@ func GetUserConfig(log *zap.Logger, v *viper.Viper) (*UserOptions, error) {
 // GetUserTestConfig -- read user test config options
 func GetUserTestConfig(log *zap.Logger, v *viper.Viper) (*UserTestOptions, error) {
 	userTestOpt := UserTestOptions{}
-	// userTestOpt.Email = v.GetString("SC_DCSA_EMAIL_TEST")
+	userTestOpt.Email = v.GetString("SC_DCSA_EMAIL_TEST")
 	// userTestOpt.Password = v.GetString("SC_DCSA_PASSWORD_TEST")
-	userTestOpt.RequestId = v.GetString("SC_DCSA_REQUESTID_TEST")
+	// userTestOpt.RequestId = v.GetString("SC_DCSA_REQUESTID_TEST")
 	userTestOpt.Tokenstring = v.GetString("SC_DCSA_TOKENSTRING_TEST")
 	return &userTestOpt, nil
 }

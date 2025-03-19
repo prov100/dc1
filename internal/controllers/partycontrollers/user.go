@@ -1,11 +1,13 @@
 package partycontrollers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/prov100/dc1/internal/common"
 	"github.com/prov100/dc1/internal/config"
+	commonproto "github.com/prov100/dc1/internal/protogen/common/v1"
 	partyproto "github.com/prov100/dc1/internal/protogen/party/v1"
 
 	"go.uber.org/cadence/client"
@@ -69,11 +71,22 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	// common.RenderJSON(w, "users are")
 }
 
-/*func (uc *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
+func (uc *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("GetUser")
+	requestID := common.GetRequestID()
+	err := common.ValidatePermissions(w, r, []string{"users:read"}, uc.ServerOpt.Auth0Audience, uc.ServerOpt.Auth0Domain)
+	if err != nil {
+		common.RenderErrorJSON(w, "1001", err.Error(), 401, requestID)
+		return
+	}
+
+	email := r.Header.Get("X-User-Email")
+	token := r.Header.Get("X-Auth-Token")
+
 	id := r.PathValue("id")
 	fmt.Println("id in GetUser is", id)
-	ctx, cdata := common.GetProtoMd(r)
+	// ctx, cdata := common.GetProtoMd(r)
+	ctx, cdata := common.GetProtoMd(r, email, token)
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
 	if err != nil {
 		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
@@ -91,8 +104,48 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	common.RenderJSON(w, usr)
 }
 
+// GetUserByEmail - Get User By email
+func (uc *UserController) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
+	requestID := common.GetRequestID()
+	err := common.ValidatePermissions(w, r, []string{"users:read"}, uc.ServerOpt.Auth0Audience, uc.ServerOpt.Auth0Domain)
+	if err != nil {
+		common.RenderErrorJSON(w, "1001", err.Error(), 401, requestID)
+		return
+	}
+
+	email := r.Header.Get("X-User-Email")
+	token := r.Header.Get("X-Auth-Token")
+
+	// ctx, cdata := common.GetProtoMd(r)
+	ctx, cdata := common.GetProtoMd(r, email, token)
+
+	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
+	if err != nil {
+		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
+		return
+	}
+	form := partyproto.GetUserByEmailRequest{}
+	decoder := json.NewDecoder(r.Body)
+	err = decoder.Decode(&form)
+	if err != nil {
+		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
+		common.RenderErrorJSON(w, "1308", err.Error(), 402, user.RequestId)
+		return
+	}
+	form.UserEmail = user.Email
+	form.RequestId = user.RequestId
+	usr, err := uc.UserServiceClient.GetUserByEmail(ctx, &partyproto.GetUserByEmailRequest{Email: form.Email, UserEmail: user.Email, RequestId: user.RequestId})
+	if err != nil {
+		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
+		common.RenderErrorJSON(w, "1309", err.Error(), 402, user.RequestId)
+		return
+	}
+
+	common.RenderJSON(w, usr)
+}
+
 // ChangePassword - Changes Password
-func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request) {
+/*func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request) {
 	ctx, cdata := common.GetProtoMd(r)
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
 	if err != nil {
@@ -119,33 +172,6 @@ func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request)
 	common.RenderJSON(w, "We've just sent you an email to reset your password.")
 }
 
-// GetUserByEmail - Get User By email
-func (uc *UserController) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
-	ctx, cdata := common.GetProtoMd(r)
-	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
-	if err != nil {
-		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
-		return
-	}
-	form := partyproto.GetUserByEmailRequest{}
-	decoder := json.NewDecoder(r.Body)
-	err = decoder.Decode(&form)
-	if err != nil {
-		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-		common.RenderErrorJSON(w, "1308", err.Error(), 402, user.RequestId)
-		return
-	}
-	form.UserEmail = user.Email
-	form.RequestId = user.RequestId
-	usr, err := uc.UserServiceClient.GetUserByEmail(ctx, &partyproto.GetUserByEmailRequest{Email: form.Email, UserEmail: user.Email, RequestId: user.RequestId})
-	if err != nil {
-		uc.log.Error("Error", zap.String("user", user.Email), zap.String("reqid", user.RequestId), zap.Error(err))
-		common.RenderErrorJSON(w, "1309", err.Error(), 402, user.RequestId)
-		return
-	}
-
-	common.RenderJSON(w, usr)
-}
 
 // UpdateUser - Update User
 func (uc *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {

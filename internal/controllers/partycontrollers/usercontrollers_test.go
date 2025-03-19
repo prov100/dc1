@@ -21,15 +21,15 @@ var (
 	dbService    *common.DBService
 	redisService *common.RedisService
 	// userServiceClient partyproto.UserServiceClient
-	mailerService common.MailerIntf
-	jwtOpt        *config.JWTOptions
-	// userOpt       *config.UserOptions
-	userTestOpt *config.UserTestOptions
-	mux         *http.ServeMux
-	log         *zap.Logger
-	logUser     *zap.Logger
-	logParty    *zap.Logger
-	Layout      string
+	mailerService     common.MailerIntf
+	jwtOpt            *config.JWTOptions
+	userTestOpt       *config.UserTestOptions
+	backendServerAddr string
+	mux               *http.ServeMux
+	log               *zap.Logger
+	logUser           *zap.Logger
+	logParty          *zap.Logger
+	Layout            string
 )
 
 func TestMain(m *testing.M) {
@@ -74,16 +74,6 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}*/
 
-	userTestOpt, err = config.GetUserTestConfig(log, v)
-	if err != nil {
-		log.Error("Error", zap.Int("msgnum", 8301), zap.Error(err))
-		return
-	}
-
-	// redisOpt, mailerOpt, grpcServerOpt, _, _, jaegerTracerOpt, _, roleOpt := config.GetConfigOpt(log, v)
-
-	// dbService, redisService, _, tokenService = common.GetServices(log, true, dbOpt, redisOpt, jwtOpt, mailerOpt)
-
 	redisOpt, mailerOpt, serverOpt, grpcServerOpt, oauthOpt, userOpt, uptraceOpt := config.GetConfigOpt(log, v)
 
 	dbService, redisService, _ = common.GetServices(log, true, dbOpt, redisOpt, jwtOpt, mailerOpt)
@@ -91,6 +81,13 @@ func TestMain(m *testing.M) {
 	mailerService, err = test.CreateMailerServiceTest(log)
 	if err != nil {
 		log.Error("Error", zap.Int("msgnum", 8016), zap.Error(err))
+	}
+
+	backendServerAddr = serverOpt.BackendServerAddr
+	userTestOpt, err = config.GetUserTestConfig(log, v)
+	if err != nil {
+		log.Error("Error", zap.Int("msgnum", 8301), zap.Error(err))
+		return
 	}
 
 	pwd, _ := os.Getwd()
@@ -113,9 +110,12 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func LoginUser() (string, string) {
+func LoginUser() (string, string, string) {
 	fmt.Println("in Login User userTestOpt.Tokenstring", userTestOpt.Tokenstring)
-	return userTestOpt.Tokenstring, ""
+	fmt.Println("in Login User backendServerAddr", backendServerAddr)
+	addr := "http://localhost:" + backendServerAddr
+	fmt.Println("BackendServerAddr", addr)
+	return userTestOpt.Tokenstring, userTestOpt.Email, addr
 }
 
 /*func LoginUser() (string, string) {

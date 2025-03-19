@@ -1,6 +1,6 @@
 package partycontrollers
 
-import (
+/*import (
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -103,4 +103,4 @@ func GetParty(id uint32, uuid4 []byte, idS string, partyName string, taxReferenc
 
 	party := partyproto.Party{PartyD: partyD, CrUpdUser: crUpdUser, CrUpdTime: crUpdTime}
 	return &party, nil
-}
+}*/

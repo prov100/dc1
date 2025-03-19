@@ -19,14 +19,6 @@ import (
 	"go.uber.org/zap"
 )
 
-/*** APIG start ***/
-// API Gateway configuration
-const (
-	BackendServiceURL = "http://localhost:9061" // Backend service URL
-)
-
-/*** APIG end ***/
-
 func getKeys(log *zap.Logger, caCertPath string, certPath string, keyPath string) *tls.Config {
 	caCert, err := os.ReadFile(caCertPath)
 	if err != nil {
@@ -95,6 +87,8 @@ func main() {
 		common.CorsMiddleware,
 		common.ValidateToken(serverOpt.Auth0Audience, serverOpt.Auth0Domain),
 	)
+
+	BackendServiceURL := "http://localhost:" + serverOpt.BackendServerAddr
 
 	// Create a proxy handler for the backend service
 	proxyHandler := NewProxyHandler(BackendServiceURL)

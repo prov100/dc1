@@ -119,7 +119,11 @@ func initUsers(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Log
 	fmt.Println("internal/controllers/partycontrollers/init.go initUsers() started")
 	fmt.Println("internal/controllers/partycontrollers/init.go initUsers() started mux is", mux)
 	usc := NewUserController(log, u, h, workflowClient, serverOpt)
+
 	mux.Handle("GET /v0.1/users", http.HandlerFunc(usc.GetUsers))
+	mux.Handle("GET /v0.1/users/{id}", http.HandlerFunc(usc.GetUser))
+	mux.Handle("POST /v0.1/users/getuserbyemail", http.HandlerFunc(usc.GetUserByEmail))
+
 	fmt.Println("internal/controllers/partycontrollers/init.go initUsers() ended")
 
 	/*mux.Handle("GET /v0.1/users", mChainRead(http.HandlerFunc(usc.GetUsers)))

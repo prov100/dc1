@@ -22,16 +22,20 @@ func TestGetUsers(t *testing.T) {
 		return
 	}
 
-	tokenString, _ := LoginUser()
+	tokenString, email, backendServerAddr := LoginUser()
 
 	w := httptest.NewRecorder()
 
-	req, err := http.NewRequest("GET", "http://localhost:9061/v0.1/users", nil)
+	// req, err := http.NewRequest("GET", "http://localhost:9061/v0.1/users", nil)
+
+	req, err := http.NewRequest("GET", backendServerAddr+"/v0.1/users", nil)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	req.Header.Set("Authorization", "Bearer "+tokenString)
+	req.Header.Set("X-User-Email", email)
+	req.Header.Set("X-Auth-Token", tokenString)
 
 	mux.ServeHTTP(w, req)
 
@@ -85,17 +89,20 @@ func TestGetUser(t *testing.T) {
 		return
 	}
 
-	tokenString, _ := LoginUser()
+	tokenString, email, backendServerAddr := LoginUser()
 
 	w := httptest.NewRecorder()
 
-	req, err := http.NewRequest("GET", "https://localhost:9061/v0.1/users/auth0|66fd06d0bfea78a82bb42459", nil)
+	req, err := http.NewRequest("GET", backendServerAddr+"/v0.1/users/auth0|66fd06d0bfea78a82bb42459", nil)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
 	req.Header.Set("Authorization", "Bearer "+tokenString)
+	req.Header.Set("X-User-Email", email)
+	req.Header.Set("X-Auth-Token", tokenString)
+
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -141,19 +148,22 @@ func TestGetUserByEmail(t *testing.T) {
 		return
 	}
 
-	tokenString, _ := LoginUser()
+	tokenString, email, backendServerAddr := LoginUser()
 
 	w := httptest.NewRecorder()
 
 	data := []byte(`{"email" : "sprov300@gmail.com"}`)
 
-	req, err := http.NewRequest("POST", "https://localhost:9061/v0.1/users/getuserbyemail", bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", backendServerAddr+"/v0.1/users/getuserbyemail", bytes.NewBuffer(data))
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
 	req.Header.Set("Authorization", "Bearer "+tokenString)
+	req.Header.Set("X-User-Email", email)
+	req.Header.Set("X-Auth-Token", tokenString)
+
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -192,7 +202,7 @@ func TestGetUserByEmail(t *testing.T) {
 	}
 }
 
-func TestChangePassword(t *testing.T) {
+/*func TestChangePassword(t *testing.T) {
 	var err error
 	err = test.LoadSQL(log, dbService)
 	if err != nil {
@@ -231,7 +241,7 @@ func TestChangePassword(t *testing.T) {
 			w.Body.String(), expected)
 		return
 	}
-}
+}*/
 
 func GetUser(id string, email string, picture string, name string) (*partyproto.User, error) {
 	user := new(partyproto.User)
