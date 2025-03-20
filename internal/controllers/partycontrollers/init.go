@@ -123,18 +123,9 @@ func initUsers(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Log
 	mux.Handle("GET /v0.1/users", http.HandlerFunc(usc.GetUsers))
 	mux.Handle("GET /v0.1/users/{id}", http.HandlerFunc(usc.GetUser))
 	mux.Handle("POST /v0.1/users/getuserbyemail", http.HandlerFunc(usc.GetUserByEmail))
+	// mux.Handle("POST /v0.1/users/change-password", http.HandlerFunc(usc.ChangePassword))
+	// mux.Handle("PUT /v0.1/users/{id}", http.HandlerFunc(usc.UpdateUser))
+	// mux.Handle("DELETE /v0.1/users/{id}", http.HandlerFunc(usc.DeleteUser))
 
 	fmt.Println("internal/controllers/partycontrollers/init.go initUsers() ended")
-
-	/*mux.Handle("GET /v0.1/users", mChainRead(http.HandlerFunc(usc.GetUsers)))
-
-	mux.Handle("GET /v0.1/users/{id}", mChainRead(http.HandlerFunc(usc.GetUser)))
-
-	mux.Handle("POST /v0.1/users/change-password", mChainCud(http.HandlerFunc(usc.ChangePassword)))
-
-	mux.Handle("POST /v0.1/users/getuserbyemail", mChainRead(http.HandlerFunc(usc.GetUserByEmail)))
-
-	mux.Handle("PUT /v0.1/users/{id}", mChainCud(http.HandlerFunc(usc.UpdateUser)))
-
-	mux.Handle("DELETE /v0.1/users/{id}", mChainCud(http.HandlerFunc(usc.DeleteUser)))*/
 }
