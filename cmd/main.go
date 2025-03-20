@@ -93,17 +93,10 @@ func main() {
 	// Create a proxy handler for the backend service
 	proxyHandler := NewProxyHandler(BackendServiceURL)
 
-	// mux.Handle("/v0.1/users/", chain(proxyHandler))
-
 	mux.Handle("/v0.1/users", chain(proxyHandler))
-	mux.Handle("/v0.1/users/{id}", chain(proxyHandler))
-	mux.Handle("/v0.1/users/getuserbyemail", chain(proxyHandler))
-	mux.Handle("/v0.1/users/change-password", chain(proxyHandler))
-
+	mux.Handle("/v0.1/users/", chain(proxyHandler))
 	mux.Handle("/v0.1/parties", chain(proxyHandler))
-	mux.Handle("/v0.1/parties/{id}", chain(proxyHandler))
-
-	fmt.Println("main mux2222222222")
+	mux.Handle("/v0.1/parties/", chain(proxyHandler))
 
 	fmt.Println("main mux333333333333333")
 	if serverOpt.ServerTLS == "true" {

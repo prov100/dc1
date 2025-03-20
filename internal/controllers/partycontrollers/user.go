@@ -4,11 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/prov100/dc1/internal/common"
 	"github.com/prov100/dc1/internal/config"
 	commonproto "github.com/prov100/dc1/internal/protogen/common/v1"
 	partyproto "github.com/prov100/dc1/internal/protogen/party/v1"
+	"github.com/prov100/dc1/internal/workflows/userworkflows"
+	"google.golang.org/grpc/metadata"
 
 	"go.uber.org/cadence/client"
 	"go.uber.org/zap"
@@ -39,7 +43,7 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r is", r)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers r.Context() is", r.Context())
 	requestID := common.GetRequestID()
-	err := common.ValidatePermissions(w, r, []string{"users:cud"}, uc.ServerOpt.Auth0Audience, uc.ServerOpt.Auth0Domain)
+	err := common.ValidatePermissions(w, r, []string{"users:read"}, uc.ServerOpt.Auth0Audience, uc.ServerOpt.Auth0Domain)
 	if err != nil {
 		common.RenderErrorJSON(w, "1001", err.Error(), 401, requestID)
 		return
@@ -51,7 +55,6 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("token is", token)
 
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers call common.GetProtoMd started")
-	// ctx, cdata := common.GetProtoMd(r)
 	ctx, cdata := common.GetProtoMd(r, email, token)
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers call common.GetProtoMd ended")
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
@@ -68,7 +71,6 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("controllers/partycontrollrs/user.go UserController GetUsers users", users)
 	common.RenderJSON(w, users)
-	// common.RenderJSON(w, "users are")
 }
 
 func (uc *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
@@ -84,7 +86,6 @@ func (uc *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	id := r.PathValue("id")
 	fmt.Println("id in GetUser is", id)
-	// ctx, cdata := common.GetProtoMd(r)
 	ctx, cdata := common.GetProtoMd(r, email, token)
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
 	if err != nil {
@@ -114,7 +115,6 @@ func (uc *UserController) GetUserByEmail(w http.ResponseWriter, r *http.Request)
 
 	email, token := common.GetEmailToken(r)
 
-	// ctx, cdata := common.GetProtoMd(r)
 	ctx, cdata := common.GetProtoMd(r, email, token)
 
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
@@ -143,8 +143,18 @@ func (uc *UserController) GetUserByEmail(w http.ResponseWriter, r *http.Request)
 }
 
 // ChangePassword - Changes Password
-/*func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request) {
-	ctx, cdata := common.GetProtoMd(r)
+func (uc *UserController) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	requestID := common.GetRequestID()
+	err := common.ValidatePermissions(w, r, []string{"users:cud"}, uc.ServerOpt.Auth0Audience, uc.ServerOpt.Auth0Domain)
+	if err != nil {
+		common.RenderErrorJSON(w, "1001", err.Error(), 401, requestID)
+		return
+	}
+
+	email, token := common.GetEmailToken(r)
+
+	ctx, cdata := common.GetProtoMd(r, email, token)
+
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
 	if err != nil {
 		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
@@ -170,11 +180,21 @@ func (uc *UserController) GetUserByEmail(w http.ResponseWriter, r *http.Request)
 	common.RenderJSON(w, "We've just sent you an email to reset your password.")
 }
 
-
 // UpdateUser - Update User
 func (uc *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	requestID := common.GetRequestID()
+	err := common.ValidatePermissions(w, r, []string{"users:cud"}, uc.ServerOpt.Auth0Audience, uc.ServerOpt.Auth0Domain)
+	if err != nil {
+		common.RenderErrorJSON(w, "1001", err.Error(), 401, requestID)
+		return
+	}
+
+	email, token := common.GetEmailToken(r)
+
+	ctx, cdata := common.GetProtoMd(r, email, token)
+
 	id := r.PathValue("id")
-	ctx, cdata := common.GetProtoMd(r)
+
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
 	if err != nil {
 		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
@@ -190,7 +210,7 @@ func (uc *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	ctx = metadata.NewOutgoingContext(ctx, md)
 
 	workflowOptions := client.StartWorkflowOptions{
-		ID:                              "dcsa_" + uuid.New(),
+		ID:                              "dcsa_" + uuid.New().String(),
 		TaskList:                        userworkflows.ApplicationName,
 		ExecutionStartToCloseTimeout:    time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
@@ -224,8 +244,19 @@ func (uc *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 // DeleteUser - delete user
 func (uc *UserController) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	requestID := common.GetRequestID()
+	err := common.ValidatePermissions(w, r, []string{"users:cud"}, uc.ServerOpt.Auth0Audience, uc.ServerOpt.Auth0Domain)
+	if err != nil {
+		common.RenderErrorJSON(w, "1001", err.Error(), 401, requestID)
+		return
+	}
+
+	email, token := common.GetEmailToken(r)
+
+	ctx, cdata := common.GetProtoMd(r, email, token)
+
 	id := r.PathValue("id")
-	ctx, cdata := common.GetProtoMd(r)
+
 	user, err := uc.UserServiceClient.GetAuthUserDetails(ctx, &cdata)
 	if err != nil {
 		common.RenderErrorJSON(w, "1001", err.Error(), 401, user.RequestId)
@@ -233,7 +264,7 @@ func (uc *UserController) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	workflowOptions := client.StartWorkflowOptions{
-		ID:                              "dcsa_" + uuid.New(),
+		ID:                              "dcsa_" + uuid.New().String(),
 		TaskList:                        userworkflows.ApplicationName,
 		ExecutionStartToCloseTimeout:    time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
@@ -251,4 +282,4 @@ func (uc *UserController) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	common.RenderJSON(w, "response")
-}*/
+}

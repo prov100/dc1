@@ -1,0 +1,20 @@
+rani2@rani:~/go/src/github.com/prov100/dc1$ make chk
+Running goimports
+Running gofumpt
+internal/services/partyservices/user_service.go
+Running gofmt
+./internal/services/partyservices/user_service.go
+Running gocritic
+Running staticcheck
+-: internal error in importing "crypto/internal/fips140/alias" (unsupported version: 2); please report an issue (compile)
+-: internal error in importing "internal/byteorder" (unsupported version: 2); please report an issue (compile)
+-: internal error in importing "internal/cpu" (unsupported version: 2); please report an issue (compile)
+-: internal error in importing "internal/goarch" (unsupported version: 2); please report an issue (compile)
+-: internal error in importing "internal/goos" (unsupported version: 2); please report an issue (compile)
+-: internal error in importing "internal/runtime/atomic" (unsupported version: 2); please report an issue (compile)
+-: internal error in importing "math/bits" (unsupported version: 2); please report an issue (compile)
+-: internal error in importing "unicode/utf8" (unsupported version: 2); please report an issue (compile)
+make: *** [Makefile:94: staticcheck] Error 1
+rani2@rani:~/go/src/github.com/prov100/dc1$ 
+
+

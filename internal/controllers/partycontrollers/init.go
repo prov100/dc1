@@ -107,11 +107,15 @@ func initSetup(log *zap.Logger, keyPath string, configFilePath string, serverOpt
 
 func initParties(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Logger, u partyproto.UserServiceClient, p partyproto.PartyServiceClient, wfHelper common.WfHelper, workflowClient client.Client) {
 	fmt.Println("internal/controllers/partycontrollers/init.go initParties() started")
-	/*pp := NewPartyController(log, p, u)
+	pp := NewPartyController(log, p, u, serverOpt)
 
-	mux.Handle("GET /v0.1/parties", mChainRead(http.HandlerFunc(pp.GetParties)))
+	mux.Handle("GET /v0.1/parties", http.HandlerFunc(pp.GetParties))
+	mux.Handle("GET /v0.1/parties/{id}", http.HandlerFunc(pp.GetParty))
+	mux.Handle("POST /v0.1/create", http.HandlerFunc(pp.CreateParty))
+	mux.Handle("POST /v0.1/parties/{id}/partyContactDetailcreate", http.HandlerFunc(pp.CreatePartyContactDetail))
+	mux.Handle("PUT /v0.1/parties/{id}", http.HandlerFunc(pp.UpdateParty))
+	mux.Handle("DELETE /v0.1/parties/{id}", http.HandlerFunc(pp.DeleteParty))
 
-	mux.Handle("POST /v0.1/parties/{id}", mChainCud(http.HandlerFunc(pp.CreateParty)))*/
 	fmt.Println("internal/controllers/partycontrollers/init.go initParties() ended")
 }
 
@@ -123,9 +127,9 @@ func initUsers(mux *http.ServeMux, serverOpt *config.ServerOptions, log *zap.Log
 	mux.Handle("GET /v0.1/users", http.HandlerFunc(usc.GetUsers))
 	mux.Handle("GET /v0.1/users/{id}", http.HandlerFunc(usc.GetUser))
 	mux.Handle("POST /v0.1/users/getuserbyemail", http.HandlerFunc(usc.GetUserByEmail))
-	// mux.Handle("POST /v0.1/users/change-password", http.HandlerFunc(usc.ChangePassword))
-	// mux.Handle("PUT /v0.1/users/{id}", http.HandlerFunc(usc.UpdateUser))
-	// mux.Handle("DELETE /v0.1/users/{id}", http.HandlerFunc(usc.DeleteUser))
+	mux.Handle("POST /v0.1/users/change-password", http.HandlerFunc(usc.ChangePassword))
+	mux.Handle("PUT /v0.1/users/{id}", http.HandlerFunc(usc.UpdateUser))
+	mux.Handle("DELETE /v0.1/users/{id}", http.HandlerFunc(usc.DeleteUser))
 
 	fmt.Println("internal/controllers/partycontrollers/init.go initUsers() ended")
 }

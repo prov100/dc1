@@ -1,6 +1,6 @@
 package partycontrollers
 
-/*import (
+import (
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -23,17 +23,18 @@ func TestGetParty(t *testing.T) {
 		return
 	}
 
-	tokenString, _ := LoginUser()
+	tokenString, email, backendServerAddr := LoginUser()
 
 	w := httptest.NewRecorder()
 
-	req, err := http.NewRequest("GET", "https://localhost:6060/v0.1/parties/be5bc290-7bac-48bb-a211-f3fa5a3ab3ae/", nil)
+	req, err := http.NewRequest("GET", backendServerAddr+"/v0.1/parties/be5bc290-7bac-48bb-a211-f3fa5a3ab3ae", nil)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	req.Header.Set("Authorization", "Bearer "+tokenString)
+	req = common.SetEmailToken(req, tokenString, email)
+
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -103,4 +104,4 @@ func GetParty(id uint32, uuid4 []byte, idS string, partyName string, taxReferenc
 
 	party := partyproto.Party{PartyD: partyD, CrUpdUser: crUpdUser, CrUpdTime: crUpdTime}
 	return &party, nil
-}*/
+}

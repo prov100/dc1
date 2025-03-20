@@ -16,8 +16,7 @@ import (
 )
 
 func TestGetUsers(t *testing.T) {
-	var err error
-	err = test.LoadSQL(log, dbService)
+	err := test.LoadSQL(log, dbService)
 	if err != nil {
 		t.Error(err)
 		return
@@ -198,7 +197,7 @@ func TestGetUserByEmail(t *testing.T) {
 	}
 }
 
-/*func TestChangePassword(t *testing.T) {
+func TestChangePassword(t *testing.T) {
 	var err error
 	err = test.LoadSQL(log, dbService)
 	if err != nil {
@@ -206,19 +205,19 @@ func TestGetUserByEmail(t *testing.T) {
 		return
 	}
 
-	tokenString, _ := LoginUser()
+	tokenString, email, backendServerAddr := LoginUser()
 
 	w := httptest.NewRecorder()
 
 	data := []byte(`{"email" : "sprov300@gmail.com"}`)
 
-	req, err := http.NewRequest("POST", "http://localhost:9061/v0.1/users/change-password", bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", backendServerAddr+"/v0.1/users/change-password", bytes.NewBuffer(data))
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	req.Header.Set("Authorization", "Bearer "+tokenString)
+	req = common.SetEmailToken(req, tokenString, email)
 
 	mux.ServeHTTP(w, req)
 
@@ -237,7 +236,7 @@ func TestGetUserByEmail(t *testing.T) {
 			w.Body.String(), expected)
 		return
 	}
-}*/
+}
 
 func GetUser(id string, email string, picture string, name string) (*partyproto.User, error) {
 	user := new(partyproto.User)
