@@ -284,3 +284,16 @@ func getClaims(audience string, domain string, tokenString string, w http.Respon
 	fmt.Println("email is", claims.Email)
 	return middleware, claims, nil
 }
+
+func SetEmailToken(req *http.Request, tokenString string, email string) *http.Request {
+	req.Header.Set("Authorization", "Bearer "+tokenString)
+	req.Header.Set("X-User-Email", email)
+	req.Header.Set("X-Auth-Token", tokenString)
+	return req
+}
+
+func GetEmailToken(req *http.Request) (string, string) {
+	email := req.Header.Get("X-User-Email")
+	token := req.Header.Get("X-Auth-Token")
+	return email, token
+}

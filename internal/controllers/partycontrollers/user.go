@@ -45,8 +45,8 @@ func (uc *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	email := r.Header.Get("X-User-Email")
-	token := r.Header.Get("X-Auth-Token")
+	email, token := common.GetEmailToken(r)
+
 	fmt.Println("email is", email)
 	fmt.Println("token is", token)
 
@@ -80,8 +80,7 @@ func (uc *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	email := r.Header.Get("X-User-Email")
-	token := r.Header.Get("X-Auth-Token")
+	email, token := common.GetEmailToken(r)
 
 	id := r.PathValue("id")
 	fmt.Println("id in GetUser is", id)
@@ -113,8 +112,7 @@ func (uc *UserController) GetUserByEmail(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	email := r.Header.Get("X-User-Email")
-	token := r.Header.Get("X-Auth-Token")
+	email, token := common.GetEmailToken(r)
 
 	// ctx, cdata := common.GetProtoMd(r)
 	ctx, cdata := common.GetProtoMd(r, email, token)

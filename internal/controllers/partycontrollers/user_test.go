@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/prov100/dc1/internal/common"
 	partyproto "github.com/prov100/dc1/internal/protogen/party/v1"
 	"github.com/prov100/dc1/test"
 )
@@ -33,9 +34,8 @@ func TestGetUsers(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	req.Header.Set("Authorization", "Bearer "+tokenString)
-	req.Header.Set("X-User-Email", email)
-	req.Header.Set("X-Auth-Token", tokenString)
+
+	req = common.SetEmailToken(req, tokenString, email)
 
 	mux.ServeHTTP(w, req)
 
@@ -99,9 +99,7 @@ func TestGetUser(t *testing.T) {
 		return
 	}
 
-	req.Header.Set("Authorization", "Bearer "+tokenString)
-	req.Header.Set("X-User-Email", email)
-	req.Header.Set("X-Auth-Token", tokenString)
+	req = common.SetEmailToken(req, tokenString, email)
 
 	mux.ServeHTTP(w, req)
 
@@ -160,9 +158,7 @@ func TestGetUserByEmail(t *testing.T) {
 		return
 	}
 
-	req.Header.Set("Authorization", "Bearer "+tokenString)
-	req.Header.Set("X-User-Email", email)
-	req.Header.Set("X-Auth-Token", tokenString)
+	req = common.SetEmailToken(req, tokenString, email)
 
 	mux.ServeHTTP(w, req)
 
