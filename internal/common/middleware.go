@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"strings"
 )
 
@@ -161,4 +163,36 @@ func getToken(r *http.Request) (string, error) {
 		return "", errors.New("Error parsing token")
 	}
 	return authHeaderParts[1], nil
+}
+
+func NewProxyHandler(backendURL string) http.Handler {
+	backend, _ := url.Parse(backendURL)
+	proxy := &httputil.ReverseProxy{
+		Rewrite: func(r *httputil.ProxyRequest) {
+			// Copy the original request's context to the new request
+			fmt.Println("NewProxyHandler r.In.Context()", r.In.Context())
+			ctx := r.In.Context()
+			r.Out = r.Out.WithContext(r.In.Context())
+			fmt.Println("NewProxyHandler r.Out", r.Out)
+			fmt.Println("NewProxyHandler r.Out.Context()", r.Out.Context())
+			// print keyemailtoken which we sent to request
+			fmt.Println("NewProxyHandler context value", r.Out.Context().Value(KeyEmailToken).(ContextStruct))
+
+			// Extract the context data (e.g., JWT claims)
+			if claims, ok := ctx.Value(KeyEmailToken).(ContextStruct); ok {
+				fmt.Println("claims.Email", claims.Email)
+				fmt.Println("claims.TokenString", claims.TokenString)
+				// Add the context data to the request headers
+				r.Out.Header.Set("X-User-Email", claims.Email)
+				r.Out.Header.Set("X-Auth-Token", claims.TokenString)
+			}
+
+			// Set the backend URL and other headers
+			r.SetURL(backend)
+			r.SetXForwarded()
+			r.Out.Header.Set("X-Forwarded-Host", r.In.Header.Get("Host"))
+			r.Out.Host = backend.Host
+		},
+	}
+	return proxy
 }
